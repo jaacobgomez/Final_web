@@ -551,6 +551,76 @@ body {
   font-size: .7rem;
 }
 
+.portada-inicio {
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 60px);
+  padding: 2rem 1rem;
+  display: flex;
+}
+
+.tarjeta-inicio {
+  text-align: left;
+  width: 100%;
+  max-width: 640px;
+}
+
+.texto-pequeno {
+  text-transform: uppercase;
+  letter-spacing: .08em;
+  color: var(--foreground-muted);
+  margin-bottom: .5rem;
+  font-size: .75rem;
+}
+
+.titulo-inicio {
+  margin: 0 0 .75rem;
+  font-size: 1.9rem;
+  font-weight: 700;
+}
+
+.texto-descripcion {
+  color: var(--foreground-muted);
+  margin: 0 0 1rem;
+  font-size: .9rem;
+}
+
+.lista-caracteristicas {
+  margin: 0 0 1.5rem;
+  padding: 0;
+  font-size: .9rem;
+  list-style: none;
+}
+
+.lista-caracteristicas li {
+  margin-bottom: .35rem;
+}
+
+.boton-inicio {
+  cursor: pointer;
+  color: #000;
+  background-color: #22c55e;
+  border: none;
+  border-radius: 999px;
+  margin-bottom: .75rem;
+  padding: .6rem 1.4rem;
+  font-size: .95rem;
+  font-weight: 600;
+  transition: background-color .15s, transform .1s;
+  display: inline-block;
+}
+
+.boton-inicio:hover {
+  background-color: #4ade80;
+  transform: translateY(-1px);
+}
+
+.nota-inicio {
+  color: var(--foreground-muted);
+  margin: 0;
+  font-size: .75rem;
+}
+
 @property --tw-border-style {
   syntax: "*";
   inherits: false;

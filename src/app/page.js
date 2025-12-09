@@ -20,9 +20,9 @@ export default function Home() {
   };
 
   return (
-      <>
-        🎵 Spotify Taste Mixer
-        <button onClick={handleLogin}>Iniciar sesión con Spotify</button>
-      </>  
+    <>
+      <h1>🎵 Spotify Taste Mixer</h1>
+      <button onClick={handleLogin}>Iniciar sesión con Spotify</button>
+    </>
   );
 }

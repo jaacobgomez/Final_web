@@ -1,0 +1,25 @@
+{
+  "pages": {
+    "/_app": []
+  },
+  "devFiles": [],
+  "polyfillFiles": [
+    "static/chunks/0ce26_next_dist_build_polyfills_polyfill-nomodule.js"
+  ],
+  "lowPriorityFiles": [
+    "static/development/_ssgManifest.js",
+    "static/development/_buildManifest.js"
+  ],
+  "rootMainFiles": [
+    "static/chunks/[turbopack]_browser_dev_hmr-client_hmr-client_ts_8c6d4853._.js",
+    "static/chunks/0ce26_next_dist_compiled_react-dom_28a866fa._.js",
+    "static/chunks/0ce26_next_dist_compiled_react-server-dom-turbopack_681c8401._.js",
+    "static/chunks/0ce26_next_dist_compiled_next-devtools_index_0a696b85.js",
+    "static/chunks/0ce26_next_dist_compiled_e0c0f368._.js",
+    "static/chunks/0ce26_next_dist_client_47faec3d._.js",
+    "static/chunks/0ce26_next_dist_5c9139cc._.js",
+    "static/chunks/0ce26_@swc_helpers_cjs_8f17c655._.js",
+    "static/chunks/Practica_Final_spotify2_Final_web_a0ff3932._.js",
+    "static/chunks/turbopack-Practica_Final_spotify2_Final_web_ae2c4797._.js"
+  ]
+}

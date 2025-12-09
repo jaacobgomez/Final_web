@@ -1,0 +1,6 @@
+{
+  "/api/spotify-token/route": "app/api/spotify-token/route.js",
+  "/auth/callback/page": "app/auth/callback/page.js",
+  "/dashboard/page": "app/dashboard/page.js",
+  "/page": "app/page.js"
+}

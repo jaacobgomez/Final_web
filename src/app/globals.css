@@ -1,8 +1,11 @@
 @import "tailwindcss";
 
+/* Colores base del tema oscuro */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #121212;
+  --background-card: #181818;
+  --foreground: #f5f5f5;
+  --foreground-muted: #b3b3b3;
 }
 
 @theme inline {
@@ -12,15 +15,135 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Normalizamos el box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Estilo base del cuerpo de la página */
+body {
+  margin: 0;
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+/* Clase reutilizable para tarjetas (widgets, playlist, etc.) */
+.card {
+  background-color: var(--background-card);
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem;
+}
+
+/* ==== Estilos de la cabecera ==== */
+
+.header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: #000000;
+}
+
+.logo-nav-container {
+  max-width: 960px;          /* ancho máximo del contenido */
+  margin: 0 auto;            /* centrado horizontal */
+  padding: 0.75rem 1rem;     /* espacio interior */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* Icono + título a la izquierda */
+.titulo-logo {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-emoji {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background-color: rgba(16, 185, 129, 0.2); /* verde suave tipo Spotify */
+}
+
+.titulo-logo-Spotify {
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.texto-subtitulo {
+  margin: 0;
+  font-size: 0.7rem;
+  color: var(--foreground-muted);
+}
+
+/* Navegación de la derecha */
+.nav-links {
+  display: flex;
+  align-items: center;
+}
+
+.nav-ul {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.panel-li {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .panel-li {
+    display: block; /* enseñamos "Panel" solo en pantallas medianas o más */
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Botones de navegación */
+.inicio,
+.panel {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+  color: inherit;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.inicio:hover,
+.panel:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.7);
+}
+
+/* Botón cerrar sesión */
+.cerrar-sesion-button {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background-color: #22c55e;
+  color: #000;
+  font-weight: 500;
+  transition: background-color 0.15s ease;
+}
+
+.cerrar-sesion-button:hover {
+  background-color: #4ade80;
+}
+
+.iniciar-sesion-texto {
+  font-size: 0.7rem;
+  color: var(--foreground-muted);
 }

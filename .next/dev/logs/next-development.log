@@ -15754,3 +15754,9 @@ Import traces:
     ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
     ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
 [03:19:16.488] Server  LOG      ✓ Compiled in 28ms
+[03:38:07.282] Server  LOG      ✓ Compiled in 14ms
+[03:38:14.286] Server  LOG     CallbackPage rendered with searchParams: [[...],[...]]
+[03:38:14.439] Server  LOG     Received code for token exchange: "AQDsVAzdNxzBqrql55eDiz3MG0oWeDtmJEFAHuxZH-ap2u_E82yaGzKyXNRfUOJm11v3Nbb5uCvpFN5vW6VwEV0uFTV6gP3eOyhqaZu3hovL2Kjf2nFOB1zL8h3GFWlaFveq0lP5MuPwBQ0YvMCNP4QZT5AC1K_XgVFKYT9q6ATnHNSVPbZ06_P2uX54t_z6P9vUgJpUR80RUfgXD82SgIJYCqMv9TCBfqxt_g9F59-TiUbXH6m19IgO3ywcPeAzsYf9L2F5nfqvKHYUYR6C3sxB6xMnAzkaAgYONhkRtESAhug-LKmR-CfHWA"
+[03:38:14.530] Browser LOG     CallbackPage rendered with searchParams: [["code","AQDsVAzdNxzBqrql55eDiz3MG0oWeDtmJEFAHuxZH-ap2u_E82yaGzKyXNRfUOJm11v3Nbb5uCvpFN5vW6VwEV0uFTV6gP3eOyhqaZu3hovL2Kjf2nFOB1zL8h3GFWlaFveq0lP5MuPwBQ0YvMCNP4QZT5AC1K_XgVFKYT9q6ATnHNSVPbZ06_P2uX54t_z6P9vUgJpUR80RUfgXD82SgIJYCqMv9TCBfqxt_g9F59-TiUbXH6m19IgO3ywcPeAzsYf9L2F5nfqvKHYUYR6C3sxB6xMnAzkaAgYONhkRtESAhug-LKmR-CfHWA"],["state","BolUuEZ901l1g8nD"]]
+[03:38:14.530] Browser LOG     %c%s %o color: rgba(124, 124, 124, 0.75) CallbackPage rendered with searchParams: [["code","AQDsVAzdNxzBqrql55eDiz3MG0oWeDtmJEFAHuxZH-ap2u_E82yaGzKyXNRfUOJm11v3Nbb5uCvpFN5vW6VwEV0uFTV6gP3eOyhqaZu3hovL2Kjf2nFOB1zL8h3GFWlaFveq0lP5MuPwBQ0YvMCNP4QZT5AC1K_XgVFKYT9q6ATnHNSVPbZ06_P2uX54t_z6P9vUgJpUR80RUfgXD82SgIJYCqMv9TCBfqxt_g9F59-TiUbXH6m19IgO3ywcPeAzsYf9L2F5nfqvKHYUYR6C3sxB6xMnAzkaAgYONhkRtESAhug-LKmR-CfHWA"],["state","BolUuEZ901l1g8nD"]]
+[03:38:14.532] Server  LOG     Token exchange response data: {}

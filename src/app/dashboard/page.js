@@ -31,7 +31,6 @@ export default function DashboardPage() {
     generos: [],
     decadas: [],
     popularidad: { min: 30, max: 90 },
-    mood: { energia: 0.7, valencia: 0.7, baile: 0.7 },
   });
 
 

@@ -223,3 +223,112 @@ body {
   color: var(--foreground-muted);
   margin: 0;
 }
+
+
+/* ==== Layout del dashboard ==== */
+
+.dashboard {
+  padding: 2rem 1rem 3rem;
+}
+
+.dashboard-contenedor {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.4fr 1.6fr; /* izquierda widgets, derecha playlist */
+  gap: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .dashboard-contenedor {
+    grid-template-columns: 1fr; /* en móvil una sola columna */
+  }
+}
+
+/* Columna izquierda */
+.dashboard-columna-izquierda {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dashboard-cabecera {
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-titulo {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin: 0 0 0.3rem 0;
+}
+
+.dashboard-texto {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--foreground-muted);
+}
+
+/* Grid de widgets (se irá llenando con componentes) */
+.grid-widgets {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 720px) {
+  .grid-widgets {
+    grid-template-columns: 1fr 1fr; /* 2 columnas en pantallas medianas */
+  }
+}
+
+.widget-placeholder {
+  min-height: 90px;
+}
+
+.widget-titulo {
+  margin: 0 0 0.25rem 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.widget-texto {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--foreground-muted);
+}
+
+/* Columna derecha */
+.dashboard-columna-derecha {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bloque-playlist {
+  min-height: 260px;
+}
+
+.bloque-favoritos {
+  min-height: 140px;
+}
+
+.bloque-cabecera {
+  margin-bottom: 0.75rem;
+}
+
+.bloque-titulo {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.bloque-subtitulo {
+  margin: 0;
+  font-size: 0.8rem;
+  color: var(--foreground-muted);
+}
+
+.lista-vacia {
+  font-size: 0.8rem;
+  color: var(--foreground-muted);
+}

@@ -6,3 +6,500 @@ Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allow
 [00:00:19.104] Browser LOG     %c%s %o color: rgba(124, 124, 124, 0.75) CallbackPage rendered with searchParams: [["code","AQCu_kiFMGKlcv_wsG8PMeigHmFyWBBtJuCmVa2icFAmB88veCzAq0MPQQjmJIbb7Kh1mC53vAnAwi1F2jW5zV8pqQVoNRtUGKgDQfI5LN7qrbf9cmUQwWZypDP6VH_vWHiyzws0Zin9ls7hKqebf4ZMvyroM2ZEKtZYJG9IDyRqcp6FpOKvwYQqbB-tp7WOSWeRODOfs686Ltd005Y2-LRwlt4H2-yerR4Fmo-HaOW2P4IR_JySdXdgtRm5PvzeZLWfYXKNumIDcnFQLqS_e4BNyqgzHVaF_SL5iholSDthrKZK8D0n8qMNWA"],["state","DjxUi7znrit7TTEk"]]
 [00:00:19.300] Server  LOG     Received code for token exchange: "AQCu_kiFMGKlcv_wsG8PMeigHmFyWBBtJuCmVa2icFAmB88veCzAq0MPQQjmJIbb7Kh1mC53vAnAwi1F2jW5zV8pqQVoNRtUGKgDQfI5LN7qrbf9cmUQwWZypDP6VH_vWHiyzws0Zin9ls7hKqebf4ZMvyroM2ZEKtZYJG9IDyRqcp6FpOKvwYQqbB-tp7WOSWeRODOfs686Ltd005Y2-LRwlt4H2-yerR4Fmo-HaOW2P4IR_JySdXdgtRm5PvzeZLWfYXKNumIDcnFQLqS_e4BNyqgzHVaF_SL5iholSDthrKZK8D0n8qMNWA"
 [00:00:19.388] Server  LOG     Token exchange response data: {}
+[00:13:52.337] Server  LOG      ✓ Compiled in 59ms
+[00:14:24.333] Server  LOG      ✓ Compiled in 38ms
+[00:14:24.528] Browser ERROR   uncaughtError: ReferenceError: getRandomSpotifyImage is not defined
+[00:14:34.212] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:14:34.239] Server  LOG      ✓ Compiled in 15ms
+[00:14:35.490] Browser ERROR   uncaughtError: ReferenceError: getRandomSpotifyImage is not defined
+[00:14:51.438] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:14:51.519] Server  LOG      ✓ Compiled in 22ms
+[00:14:52.683] Browser ERROR   uncaughtError: ReferenceError: getRandomSpotifyImage is not defined
+[00:15:02.680] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:15:02.773] Server  LOG      ✓ Compiled in 22ms
+[00:15:03.955] Browser ERROR   uncaughtError: ReferenceError: getRandomSpotifyImage is not defined
+[00:15:22.113] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:15:22.254] Server  LOG      ✓ Compiled in 29ms
+[00:15:23.482] Browser ERROR   uncaughtError: ReferenceError: getRandomSpotifyImage is not defined
+[00:15:52.686] Server  WARN     ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[00:15:52.776] Server  LOG      ✓ Compiled in 19ms
+[00:16:19.963] Server  LOG      ✓ Compiled in 15ms
+[00:16:20.143] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:51.364] Server  ERROR    ⨯ ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+
+[00:17:51.501] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:53.172] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:53.172] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:53.172] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:53.172] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:54.300] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:54.300] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/page.js [Server Component]
+[00:17:54.300] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:17:54.300] Browser ERROR   uncaughtError: Error: ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:50:1
+Parsing ecmascript source code failed
+  48 |          <div className="dashboard-columna-izquierda"></div>
+  49 |   );
+> 50 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+
+[00:19:34.632] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:68:1
+Parsing ecmascript source code failed
+  66 |          </div>
+  67 |   );
+> 68 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:19:34.745] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:68:1
+Parsing ecmascript source code failed
+  66 |          </div>
+  67 |   );
+> 68 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:19:51.674] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:75:1
+Parsing ecmascript source code failed
+  73 |          </div>
+  74 |   );
+> 75 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:19:51.879] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:75:1
+Parsing ecmascript source code failed
+  73 |          </div>
+  74 |   );
+> 75 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:20:23.836] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:83:1
+Parsing ecmascript source code failed
+  81 |          </div>
+  82 |   );
+> 83 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:20:23.898] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:83:1
+Parsing ecmascript source code failed
+  81 |          </div>
+  82 |   );
+> 83 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:20:41.906] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:89:1
+Parsing ecmascript source code failed
+  87 |             </div>
+  88 |   );
+> 89 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:20:41.936] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:89:1
+Parsing ecmascript source code failed
+  87 |             </div>
+  88 |   );
+> 89 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:21:04.979] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:90:1
+Parsing ecmascript source code failed
+  88 |       </div>
+  89 |   );
+> 90 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:21:04.988] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:90:1
+Parsing ecmascript source code failed
+  88 |       </div>
+  89 |   );
+> 90 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:21:20.012] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:99:1
+Parsing ecmascript source code failed
+  97 |       </div>
+  98 |   );
+> 99 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:21:20.054] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:99:1
+Parsing ecmascript source code failed
+  97 |       </div>
+  98 |   );
+> 99 | }
+     | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:22:01.768] Server  LOG      ✓ Compiled in 15ms
+[00:22:02.036] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:103:14
+Parsing ecmascript source code failed
+  101 |                 podrás generar tu primera mezcla aquí.
+  102 |               </p>
+> 103 |             ))}
+      |              ^
+  104 |       </div>
+  105 |   );
+  106 | }
+
+Expected '</', got ')'
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:22:02.076] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:103:14
+Parsing ecmascript source code failed
+  101 |                 podrás generar tu primera mezcla aquí.
+  102 |               </p>
+> 103 |             ))}
+      |              ^
+  104 |       </div>
+  105 |   );
+  106 | }
+
+Expected '</', got ')'
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:23:08.252] Server  LOG      ✓ Compiled in 24ms
+[00:23:08.372] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:109:1
+Parsing ecmascript source code failed
+  107 |       </div>
+  108 |   );
+> 109 | }
+      | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:23:09.270] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:109:1
+Parsing ecmascript source code failed
+  107 |       </div>
+  108 |   );
+> 109 | }
+      | ^
+
+Unexpected token. Did you mean `{'}'}` or `&rbrace;`?
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[00:24:06.686] Server  LOG      ✓ Compiled in 45ms
+[00:24:16.578] Server  LOG     CallbackPage rendered with searchParams: [[...],[...]]
+[00:24:16.739] Server  LOG     Received code for token exchange: "AQCXYKKXDMmzaU7DuEAvib2-TL0mEyn4kOeMCnW9fecnphN_7vXxec60pd2aSe__c75FORtAI5UyULQJqlatmnzVQ6L5j0fz2bEjfnfppAGjHp_Wd5wdFNzzUm2CDIC_akBhVjLfRJn15CrEdnkqQT0v-j8A_RxYgXLUt7ygkfIgdWOPSOxRuFu-hRnuW9wMXaPrEqTcMw4iBpBbHGL3dAEaKrfh35uVjA-jvEm_PWF-HeOqk2K6YiXzxsEfhPTOtJ_qbPJz2IFnlyqrzVQ9ZO6fV7Z80sS87XHbWDq56yBFRQ5QQB3VuWsYUw"
+[00:24:16.817] Browser LOG     CallbackPage rendered with searchParams: [["code","AQCXYKKXDMmzaU7DuEAvib2-TL0mEyn4kOeMCnW9fecnphN_7vXxec60pd2aSe__c75FORtAI5UyULQJqlatmnzVQ6L5j0fz2bEjfnfppAGjHp_Wd5wdFNzzUm2CDIC_akBhVjLfRJn15CrEdnkqQT0v-j8A_RxYgXLUt7ygkfIgdWOPSOxRuFu-hRnuW9wMXaPrEqTcMw4iBpBbHGL3dAEaKrfh35uVjA-jvEm_PWF-HeOqk2K6YiXzxsEfhPTOtJ_qbPJz2IFnlyqrzVQ9ZO6fV7Z80sS87XHbWDq56yBFRQ5QQB3VuWsYUw"],["state","obAbJQI8PbXjCJw6"]]
+[00:24:16.817] Browser LOG     %c%s %o color: rgba(124, 124, 124, 0.75) CallbackPage rendered with searchParams: [["code","AQCXYKKXDMmzaU7DuEAvib2-TL0mEyn4kOeMCnW9fecnphN_7vXxec60pd2aSe__c75FORtAI5UyULQJqlatmnzVQ6L5j0fz2bEjfnfppAGjHp_Wd5wdFNzzUm2CDIC_akBhVjLfRJn15CrEdnkqQT0v-j8A_RxYgXLUt7ygkfIgdWOPSOxRuFu-hRnuW9wMXaPrEqTcMw4iBpBbHGL3dAEaKrfh35uVjA-jvEm_PWF-HeOqk2K6YiXzxsEfhPTOtJ_qbPJz2IFnlyqrzVQ9ZO6fV7Z80sS87XHbWDq56yBFRQ5QQB3VuWsYUw"],["state","obAbJQI8PbXjCJw6"]]
+[00:24:17.130] Server  LOG     Token exchange response data: {}

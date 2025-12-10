@@ -1,3 +1,4 @@
+
 @import "tailwindcss";
 
 /* Colores base del tema oscuro */
@@ -228,24 +229,35 @@ body {
 /* ==== Layout del dashboard ==== */
 
 .dashboard {
-  padding: 2rem 1rem 3rem;
+  padding: 1.5rem 1rem 3rem;
 }
 
+/* Por defecto (móvil, pantallas estrechas): una sola columna */
 .dashboard-contenedor {
-  max-width: 1100px;
+  max-width: 1200px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1.4fr 1.6fr; /* izquierda widgets, derecha playlist */
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-@media (max-width: 900px) {
+/* A partir de 960px: dos columnas lado a lado */
+@media (min-width: 960px) {
   .dashboard-contenedor {
-    grid-template-columns: 1fr; /* en móvil una sola columna */
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .dashboard-columna-izquierda {
+    flex: 2;
+  }
+
+  .dashboard-columna-derecha {
+    flex: 1.4;
   }
 }
 
-/* Columna izquierda */
+/* Columna izquierda (widgets) */
 .dashboard-columna-izquierda {
   display: flex;
   flex-direction: column;
@@ -268,36 +280,14 @@ body {
   color: var(--foreground-muted);
 }
 
-/* Grid de widgets (se irá llenando con componentes) */
+/* Grid de widgets: se adapta al ancho disponible */
 .grid-widgets {
   display: grid;
-  grid-template-columns: 1fr;
   gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
 }
 
-@media (min-width: 720px) {
-  .grid-widgets {
-    grid-template-columns: 1fr 1fr; /* 2 columnas en pantallas medianas */
-  }
-}
-
-.widget-placeholder {
-  min-height: 90px;
-}
-
-.widget-titulo {
-  margin: 0 0 0.25rem 0;
-  font-size: 0.9rem;
-  font-weight: 600;
-}
-
-.widget-texto {
-  margin: 0;
-  font-size: 0.8rem;
-  color: var(--foreground-muted);
-}
-
-/* Columna derecha */
+/* Columna derecha (playlist + favoritos) */
 .dashboard-columna-derecha {
   display: flex;
   flex-direction: column;
@@ -519,4 +509,350 @@ body {
   justify-content: space-between;
   font-size: 0.75rem;
   color: var(--foreground-muted);
+}
+
+/* ==== Widget de artistas ==== */
+
+.widget-artistas {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Mensajes de estado */
+.texto-estado-busqueda {
+  font-size: 0.8rem;
+  color: var(--foreground-muted);
+  margin: 0;
+}
+
+.texto-error-busqueda {
+  font-size: 0.8rem;
+  color: #fca5a5;
+  margin: 0;
+}
+
+/* Lista de resultados de artistas */
+.lista-artistas {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.item-artista {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.item-artista:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.item-artista-seleccionado {
+  background-color: #22c55e;
+  border-color: #22c55e;
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+.imagen-artista {
+  width: 36px;
+  height: 36px;
+  border-radius: 999px;
+  object-fit: cover;
+}
+
+/* Texto dentro del item de artista */
+.info-artista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.nombre-artista {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.detalle-artista {
+  font-size: 0.7rem;
+  opacity: 0.9;
+}
+
+/* Zona de artistas ya seleccionados */
+.seleccion-artistas {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.4rem;
+}
+
+.chips-artistas {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.chip-artista {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+
+/* ==== Widget de canciones ==== */
+
+.widget-canciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+/* Lista de resultados de canciones */
+.lista-canciones {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.item-cancion {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.5rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background-color: rgba(0, 0, 0, 0.4);
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.item-cancion:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.item-cancion-seleccionada {
+  background-color: #38bdf8; /* azul clarito para diferenciarlo */
+  border-color: #38bdf8;
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+.imagen-cancion {
+  width: 40px;
+  height: 40px;
+  border-radius: 0.4rem;
+  object-fit: cover;
+}
+
+/* Info de la canción */
+.info-cancion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  flex: 1;
+}
+
+.nombre-cancion {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.detalle-cancion {
+  font-size: 0.7rem;
+  color: var(--foreground-muted);
+}
+
+/* Etiqueta de contenido explícito */
+.etiqueta-explicit {
+  font-size: 0.7rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.25rem;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+/* Zona de canciones seleccionadas */
+.seleccion-canciones {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding-top: 0.4rem;
+}
+
+.chips-canciones {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+.chip-cancion {
+  font-size: 0.7rem;
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==== Playlist y TrackCard ==== */
+
+.botones-playlist {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.boton-playlist {
+  font-size: 0.8rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background-color: #22c55e;
+  color: #000;
+  font-weight: 600;
+  transition: background-color 0.15s ease, transform 0.1s ease,
+    opacity 0.1s ease;
+}
+
+.boton-playlist.secundario {
+  background-color: #27272a;
+  color: #e4e4e7;
+}
+
+.boton-playlist:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.boton-playlist:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background-color: #4ade80;
+}
+
+.boton-playlist.secundario:hover:not(:disabled) {
+  background-color: #3f3f46;
+}
+
+.lista-playlist {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* TrackCard */
+
+.track-card {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.45rem 0.55rem;
+  border-radius: 0.6rem;
+  background-color: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.track-card-imagen {
+  width: 44px;
+  height: 44px;
+  border-radius: 0.4rem;
+  object-fit: cover;
+}
+
+.track-card-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.track-card-nombre {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.track-card-artista {
+  font-size: 0.72rem;
+  color: var(--foreground-muted);
+}
+
+.track-card-extra {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.7rem;
+  color: var(--foreground-muted);
+}
+
+.track-card-acciones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.track-card-boton {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  font-size: 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.track-card-boton:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  transform: translateY(-1px);
+}
+
+.track-card-favorito-activo {
+  background-color: #facc15;
+  border-color: #facc15;
+  color: #000;
+}
+
+.track-card-eliminar {
+  border-color: rgba(248, 113, 113, 0.8);
+}
+
+.track-card-eliminar:hover {
+  background-color: rgba(248, 113, 113, 0.15);
+}
+
+/* Lista de favoritos simple */
+.lista-favoritos {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.8rem;
 }

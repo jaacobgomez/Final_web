@@ -15610,3 +15610,147 @@ https://nextjs.org/docs/messages/module-not-found
 [01:33:52.666] Browser LOG     %c%s %o color: rgba(124, 124, 124, 0.75) CallbackPage rendered with searchParams: [["code","AQCfyvEffRjsUfCwjvkLbHg78fLZ9LTq87Q4TzhB-4Jsekge5wBhbWaHP5nnoCM7RvbfbMcmJVDlSADA41yxwfOkCfJSYJ9EO9bw32GK_0tqAXzxyuRLORN0TLpznSK24oEszGXbtrQxpn-f_ehwInPBUBLfaPhww94dQurtn1GwSBRSsMESYtV-GmbfrqEtEiDCmxS9dZKFVQpxLoYcaFiItEmuzC2JuxyOQIhedZy3PSbS5Wfuq9bEbugG1Eexh0EHSVyGgk1YZI3E-df9GKDvlgJ3RKrUNXGUuPJeYu4BALhn3icz-WRCbg"],["state","z24IczYCnwp8C5Zt"]]
 [01:33:53.927] Server  LOG     Token exchange response data: {}
 [01:33:59.147] Server  LOG      ✓ Compiled in 50ms
+[01:52:02.424] Server  LOG      ✓ Compiled in 65ms
+[01:52:26.888] Server  LOG      ✓ Compiled in 21ms
+[01:52:47.415] Server  LOG      ✓ Compiled in 40ms
+[01:59:10.999] Server  LOG      ✓ Compiled in 64ms
+[01:59:35.769] Server  LOG     CallbackPage rendered with searchParams: [[...],[...]]
+[01:59:35.903] Server  LOG     Received code for token exchange: "AQDucuS70HXoqCiZG3iFiAHoOC4OHVBlfrjhWzF7ixLx7jL9QzArp3KnyF5AiHei50eu_zlnTjBV4tACOphYLH1-zDW2THPILdCp96tMe9AhLhECw7LUtVbJSZnZjrr6MbeaxA6ZEIMN4b535ZEYs5WBef7BeTBbEPj8MCUpeJiNaX8zKtWhTCyxM5lVd7hoff8L9KppLz0spgqFCqQZTDOcVXEjJRs-mkdF8L9isXr_ThlFNjntUKEf7E7KMJjhEzEtCRTlhW1QDmyLD72eVkCtX3sDeJ2vCg3U7lh_WOQMqbno6e_7LuJ4Sg"
+[01:59:35.993] Browser LOG     CallbackPage rendered with searchParams: [["code","AQDucuS70HXoqCiZG3iFiAHoOC4OHVBlfrjhWzF7ixLx7jL9QzArp3KnyF5AiHei50eu_zlnTjBV4tACOphYLH1-zDW2THPILdCp96tMe9AhLhECw7LUtVbJSZnZjrr6MbeaxA6ZEIMN4b535ZEYs5WBef7BeTBbEPj8MCUpeJiNaX8zKtWhTCyxM5lVd7hoff8L9KppLz0spgqFCqQZTDOcVXEjJRs-mkdF8L9isXr_ThlFNjntUKEf7E7KMJjhEzEtCRTlhW1QDmyLD72eVkCtX3sDeJ2vCg3U7lh_WOQMqbno6e_7LuJ4Sg"],["state","NW0f27FD1CUjygjS"]]
+[01:59:35.993] Browser LOG     %c%s %o color: rgba(124, 124, 124, 0.75) CallbackPage rendered with searchParams: [["code","AQDucuS70HXoqCiZG3iFiAHoOC4OHVBlfrjhWzF7ixLx7jL9QzArp3KnyF5AiHei50eu_zlnTjBV4tACOphYLH1-zDW2THPILdCp96tMe9AhLhECw7LUtVbJSZnZjrr6MbeaxA6ZEIMN4b535ZEYs5WBef7BeTBbEPj8MCUpeJiNaX8zKtWhTCyxM5lVd7hoff8L9KppLz0spgqFCqQZTDOcVXEjJRs-mkdF8L9isXr_ThlFNjntUKEf7E7KMJjhEzEtCRTlhW1QDmyLD72eVkCtX3sDeJ2vCg3U7lh_WOQMqbno6e_7LuJ4Sg"],["state","NW0f27FD1CUjygjS"]]
+[01:59:36.266] Server  LOG     Token exchange response data: {}
+[02:03:24.028] Server  LOG      ✓ Compiled in 61ms
+[02:03:50.019] Server  LOG      ✓ Compiled in 32ms
+[02:10:20.915] Server  LOG      ✓ Compiled in 33ms
+[02:12:41.230] Server  LOG      ✓ Compiled in 30ms
+[02:12:58.160] Server  LOG      ✓ Compiled in 41ms
+[02:20:30.684] Server  LOG      ✓ Compiled in 25ms
+[02:21:06.083] Server  LOG      ✓ Compiled in 12ms
+[02:21:31.039] Server  LOG      ✓ Compiled in 62ms
+[02:23:49.798] Server  LOG      ✓ Compiled in 27ms
+[02:24:05.216] Server  LOG      ✓ Compiled in 17ms
+[02:31:58.474] Server  LOG      ✓ Compiled in 20ms
+[02:32:40.395] Server  LOG      ✓ Compiled in 63ms
+[02:33:13.533] Server  LOG      ✓ Compiled in 16ms
+[02:33:30.980] Server  LOG      ✓ Compiled in 31ms
+[02:34:14.318] Server  LOG      ✓ Compiled in 50ms
+[02:35:32.993] Server  LOG      ✓ Compiled in 25ms
+[02:35:33.931] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:361:5
+Parsing ecmascript source code failed
+  359 |           </div>
+  360 |         </div>
+> 361 |     </section>
+      |     ^
+  362 |   );
+  363 | }
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[02:35:33.931] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:361:6
+Parsing ecmascript source code failed
+  359 |           </div>
+  360 |         </div>
+> 361 |     </section>
+      |      ^^^^^^^^^
+  362 |   );
+  363 | }
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[02:36:42.770] Server  LOG      ✓ Compiled in 58ms
+[02:36:48.726] Server  LOG     CallbackPage rendered with searchParams: [[...],[...]]
+[02:36:48.905] Server  LOG     Received code for token exchange: "AQDQT52cKvNxmM1IYlGXbbzpwLopkyT8RzBTHB-gin4Aybi2e3trzVdZlEHeMtniIrTH3UL8ZxqF91LKTgN0dVoeBNFK1HLswaDyuUSMHrngghrKwBJbJrhs0nsO2gd9aHW59bYbBAAsk7h4QfrGXGr1eBMLiaK-iNqUOoN-pms875R_-EARM2FM809URSOsPvAQ6RzAPn8sh4-22xp53UTtRvSL3XF-ZgTFt0Cytb_BfrVbZwyTdPQLBGF-G72FXOC_0M_11O9F4bJPFKj6YARzjPcWndFe9qJey_8b7_wtruXsrN8Vmp9Guw"
+[02:36:48.987] Browser LOG     CallbackPage rendered with searchParams: [["code","AQDQT52cKvNxmM1IYlGXbbzpwLopkyT8RzBTHB-gin4Aybi2e3trzVdZlEHeMtniIrTH3UL8ZxqF91LKTgN0dVoeBNFK1HLswaDyuUSMHrngghrKwBJbJrhs0nsO2gd9aHW59bYbBAAsk7h4QfrGXGr1eBMLiaK-iNqUOoN-pms875R_-EARM2FM809URSOsPvAQ6RzAPn8sh4-22xp53UTtRvSL3XF-ZgTFt0Cytb_BfrVbZwyTdPQLBGF-G72FXOC_0M_11O9F4bJPFKj6YARzjPcWndFe9qJey_8b7_wtruXsrN8Vmp9Guw"],["state","3KTo8IquuKB82u28"]]
+[02:36:48.987] Browser LOG     %c%s %o color: rgba(124, 124, 124, 0.75) CallbackPage rendered with searchParams: [["code","AQDQT52cKvNxmM1IYlGXbbzpwLopkyT8RzBTHB-gin4Aybi2e3trzVdZlEHeMtniIrTH3UL8ZxqF91LKTgN0dVoeBNFK1HLswaDyuUSMHrngghrKwBJbJrhs0nsO2gd9aHW59bYbBAAsk7h4QfrGXGr1eBMLiaK-iNqUOoN-pms875R_-EARM2FM809URSOsPvAQ6RzAPn8sh4-22xp53UTtRvSL3XF-ZgTFt0Cytb_BfrVbZwyTdPQLBGF-G72FXOC_0M_11O9F4bJPFKj6YARzjPcWndFe9qJey_8b7_wtruXsrN8Vmp9Guw"],["state","3KTo8IquuKB82u28"]]
+[02:36:49.583] Server  LOG     Token exchange response data: {}
+[02:43:14.976] Server  LOG      ✓ Compiled in 55ms
+[02:43:16.998] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/globals.css:438:2
+Parsing CSS source code failed
+  436 |   margin: 0;
+  437 | }
+> 438 | .
+      |  ^
+  439 |
+  440 | .dashboard {
+  441 |   padding: 1.5rem 1rem 3rem;
+
+Expected identifier in class selector, got WhiteSpace("\n\n")
+
+Import trace:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/globals.css [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/layout.js [Server Component]
+[02:43:21.049] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/globals.css:438:2
+Parsing CSS source code failed
+  436 |   margin: 0;
+  437 | }
+> 438 | .
+      |  ^
+  439 |
+  440 | .dashboard {
+  441 |   padding: 1.5rem 1rem 3rem;
+
+Expected identifier in class selector, got WhiteSpace("\n\n")
+
+Import trace:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/globals.css [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/layout.js [Server Component]
+[02:50:42.343] Server  LOG      ✓ Compiled in 36ms
+[02:50:42.557] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:233:9
+Parsing ecmascript source code failed
+  231 |         </div>
+  232 |         
+> 233 |         </div>
+      |         ^
+  234 |         return (
+  235 |   <section className="dashboard">
+  236 |     <div className="dashboard-contenedor">
+
+Expression expected
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[02:50:42.557] Browser ERROR   ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js:233:10
+Parsing ecmascript source code failed
+  231 |         </div>
+  232 |         
+> 233 |         </div>
+      |          ^^^^^
+  234 |         return (
+  235 |   <section className="dashboard">
+  236 |     <div className="dashboard-contenedor">
+
+Unterminated regexp literal
+
+Import traces:
+  Client Component Browser:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component Browser]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+
+  Client Component SSR:
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Client Component SSR]
+    ./Practica_Final/spotify2/Final_web/src/app/dashboard/page.js [Server Component]
+[03:19:16.488] Server  LOG      ✓ Compiled in 28ms

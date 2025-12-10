@@ -92,3 +92,158 @@ export async function getRandomSpotifyImage() {
     artist: album.artists?.[0]?.name || '',
   };
 }
+//Buscar artistas 
+// Pequeña función para leer el token del localStorage de forma segura
+function obtenerTokenCliente() {
+  if (typeof window === "undefined") return null;
+
+  try {
+    return localStorage.getItem("spotify_token") || null;
+  } catch (error) {
+    console.error("No se pudo leer el token de Spotify del localStorage", error);
+    return null;
+  }
+}
+
+export async function buscarArtistasSpotify(terminoBusqueda) {
+  const token = obtenerTokenCliente();
+
+  if (!token) {
+    throw new Error(
+      "No hay token de Spotify. Inicia sesión de nuevo para buscar artistas."
+    );
+  }
+
+  const parametros = new URLSearchParams({
+    type: "artist",
+    q: terminoBusqueda,
+    limit: "10",
+  });
+
+  const respuesta = await fetch(
+    `https://api.spotify.com/v1/search?${parametros.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (respuesta.status === 401) {
+    throw new Error("El token de Spotify ha expirado. Vuelve a iniciar sesión.");
+  }
+
+  if (!respuesta.ok) {
+    throw new Error(
+      `Error al buscar artistas (código ${respuesta.status}). Inténtalo de nuevo.`
+    );
+  }
+
+  const datos = await respuesta.json();
+  return datos.artists?.items || [];
+}
+
+// Búsqueda de canciones en la Web API de Spotify
+export async function buscarCancionesSpotify(terminoBusqueda) {
+  const token = obtenerTokenCliente();
+
+  if (!token) {
+    throw new Error(
+      "No hay token de Spotify. Inicia sesión de nuevo para buscar canciones."
+    );
+  }
+
+  const parametros = new URLSearchParams({
+    type: "track",
+    q: terminoBusqueda,
+    limit: "10",
+  });
+
+  const respuesta = await fetch(
+    `https://api.spotify.com/v1/search?${parametros.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (respuesta.status === 401) {
+    throw new Error("El token de Spotify ha expirado. Vuelve a iniciar sesión.");
+  }
+
+  if (!respuesta.ok) {
+    throw new Error(
+      `Error al buscar canciones (código ${respuesta.status}). Inténtalo de nuevo.`
+    );
+  }
+
+  const datos = await respuesta.json();
+  return datos.tracks?.items || [];
+}
+
+// Obtener top tracks de un artista
+export async function obtenerTopTracksArtista(artistId, market = "ES") {
+  const token = obtenerTokenCliente();
+  if (!token) {
+    throw new Error("No hay token de Spotify para cargar top tracks.");
+  }
+
+  const respuesta = await fetch(
+    `https://api.spotify.com/v1/artists/${artistId}/top-tracks?market=${market}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (respuesta.status === 401) {
+    throw new Error("El token de Spotify ha expirado. Vuelve a iniciar sesión.");
+  }
+
+  if (!respuesta.ok) {
+    throw new Error(
+      `Error al obtener top tracks del artista (código ${respuesta.status}).`
+    );
+  }
+
+  const datos = await respuesta.json();
+  return datos.tracks || [];
+}
+
+// Buscar canciones por género
+export async function buscarTracksPorGenero(genero, limit = 10) {
+  const token = obtenerTokenCliente();
+  if (!token) {
+    throw new Error("No hay token de Spotify para buscar por género.");
+  }
+
+  const parametros = new URLSearchParams({
+    type: "track",
+    q: `genre:${genero}`,
+    limit: String(limit),
+  });
+
+  const respuesta = await fetch(
+    `https://api.spotify.com/v1/search?${parametros.toString()}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (respuesta.status === 401) {
+    throw new Error("El token de Spotify ha expirado. Vuelve a iniciar sesión.");
+  }
+
+  if (!respuesta.ok) {
+    throw new Error(
+      `Error al buscar canciones por género (código ${respuesta.status}).`
+    );
+  }
+
+  const datos = await respuesta.json();
+  return datos.tracks?.items || [];
+}

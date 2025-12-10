@@ -11,13 +11,14 @@ export default function Cabecera() {
   const [autenticado, setAutenticado] = useState(false);
 
   // Verificar estado de autenticación al cargar y cuando la ruta cambie
-  useEffect(() => {
+    useEffect(() => {
     try {
       setAutenticado(isAuthenticated());
     } catch (error) {
       setAutenticado(false);
     }
-  }, [rutaActual]);
+  }, [rutaActual, isAuthenticated]);
+
 
   // IMPORTANTE: el nombre de la función coincide con el onClick
   const manejarLogout = () => {

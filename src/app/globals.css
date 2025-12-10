@@ -332,3 +332,68 @@ body {
   font-size: 0.8rem;
   color: var(--foreground-muted);
 }
+
+/* ==== Widget de géneros ==== */
+
+.widget-generos {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.widget-input {
+  width: 100%;
+  padding: 0.4rem 0.6rem;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background-color: #111111;
+  color: var(--foreground);
+  font-size: 0.8rem;
+}
+
+.widget-input::placeholder {
+  color: var(--foreground-muted);
+}
+
+/* Contenedor de los "chips" de géneros */
+.lista-generos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-height: 150px;
+  overflow-y: auto;
+  padding-right: 0.2rem;
+}
+
+/* Estilo base de cada género */
+.boton-genero {
+  padding: 0.35rem 0.7rem;
+  font-size: 0.75rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: transparent;
+  color: inherit;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    transform 0.1s ease;
+}
+
+.boton-genero:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+/* Cuando el género está seleccionado */
+.boton-genero-activo {
+  background-color: #22c55e;
+  border-color: #22c55e;
+  color: #000000;
+  transform: translateY(-1px);
+}
+
+/* Texto inferior de seleccionados */
+.texto-seleccionados {
+  font-size: 0.75rem;
+  color: var(--foreground-muted);
+  margin: 0;
+}

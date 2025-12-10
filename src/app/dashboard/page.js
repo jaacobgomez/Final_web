@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
+import GenreWidget from "@/components/Widgets/GenreWidget";
+
 
 export default function DashboardPage() {
   const [image, setImage] = useState(null);
@@ -56,12 +58,15 @@ export default function DashboardPage() {
            </header>
 
             <div className="grid-widgets">
-              {/* De momento solo posicion */}
-              <div className="card widget-placeholder">
-              <h3 className="widget-titulo">Widget de géneros</h3>
-              <p className="widget-texto">
-                Aquí podrás elegir tus géneros favoritos.
-              </p>
+              <GenreWidget
+                  generosSeleccionados={preferencias.generos}
+                  onCambiarGeneros={(nuevosGeneros) =>
+                    setPreferencias((previas) => ({
+                      ...previas,
+                      generos: nuevosGeneros,
+                    }))
+                  }
+                />
             </div>
 
              <div className="card widget-placeholder">
@@ -125,7 +130,6 @@ export default function DashboardPage() {
             )}
           </div>
         </div>
-      </div>
     </section>
   );
 }

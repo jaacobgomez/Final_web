@@ -97,7 +97,7 @@ function logout() {
     localStorage.removeItem('spotify_token_expiration');
 }
 }),
-"[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx [app-ssr] (ecmascript)", ((__turbopack_context__) => {
 "use strict";
 
 __turbopack_context__.s([
@@ -149,7 +149,7 @@ function Cabecera() {
                             className: "logo-emoji",
                             children: "🎵"
                         }, void 0, false, {
-                            fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                            fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                             lineNumber: 39,
                             columnNumber: 11
                         }, this),
@@ -159,7 +159,7 @@ function Cabecera() {
                                     className: "titulo-logo-Spotify",
                                     children: "Spotify Taste Mixer"
                                 }, void 0, false, {
-                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                     lineNumber: 41,
                                     columnNumber: 13
                                 }, this),
@@ -167,19 +167,19 @@ function Cabecera() {
                                     className: "texto-subtitulo",
                                     children: "Mezcla tus gustos y descubre música"
                                 }, void 0, false, {
-                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                     lineNumber: 42,
                                     columnNumber: 13
                                 }, this)
                             ]
                         }, void 0, true, {
-                            fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                            fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                             lineNumber: 40,
                             columnNumber: 11
                         }, this)
                     ]
                 }, void 0, true, {
-                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                     lineNumber: 38,
                     columnNumber: 9
                 }, this),
@@ -194,12 +194,12 @@ function Cabecera() {
                                     className: `inicio ${rutaActual === "/" ? "bg-white/10" : ""}`,
                                     children: "Inicio"
                                 }, void 0, false, {
-                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                     lineNumber: 52,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
-                                fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                 lineNumber: 51,
                                 columnNumber: 13
                             }, this),
@@ -210,12 +210,12 @@ function Cabecera() {
                                     className: `panel ${rutaActual?.startsWith("/dashboard") ? "bg-white/10" : ""}`,
                                     children: "Panel"
                                 }, void 0, false, {
-                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                     lineNumber: 63,
                                     columnNumber: 15
                                 }, this)
                             }, void 0, false, {
-                                fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                 lineNumber: 62,
                                 columnNumber: 13
                             }, this),
@@ -225,41 +225,41 @@ function Cabecera() {
                                     className: "cerrar-sesion-button",
                                     children: "Cerrar sesión"
                                 }, void 0, false, {
-                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                     lineNumber: 75,
                                     columnNumber: 17
                                 }, this) : /*#__PURE__*/ (0, __TURBOPACK__imported__module__$5b$project$5d2f$Practica_Final$2f$spotify2$2f$Final_web$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2d$jsx$2d$dev$2d$runtime$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["jsxDEV"])("span", {
                                     className: "iniciar-sesion-texto",
                                     children: "Inicia sesión para ver el panel"
                                 }, void 0, false, {
-                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                     lineNumber: 82,
                                     columnNumber: 17
                                 }, this)
                             }, void 0, false, {
-                                fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                                fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                                 lineNumber: 73,
                                 columnNumber: 13
                             }, this)
                         ]
                     }, void 0, true, {
-                        fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                        fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                         lineNumber: 50,
                         columnNumber: 11
                     }, this)
                 }, void 0, false, {
-                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+                    fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
                     lineNumber: 49,
                     columnNumber: 9
                 }, this)
             ]
         }, void 0, true, {
-            fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+            fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
             lineNumber: 36,
             columnNumber: 7
         }, this)
     }, void 0, false, {
-        fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Cabecera.jsx",
+        fileName: "[project]/Practica_Final/spotify2/Final_web/src/components/Header.jsx",
         lineNumber: 35,
         columnNumber: 5
     }, this);
@@ -267,4 +267,4 @@ function Cabecera() {
 }),
 ];
 
-//# sourceMappingURL=%5Broot-of-the-server%5D__83503e23._.js.map
+//# sourceMappingURL=%5Broot-of-the-server%5D__435133d1._.js.map

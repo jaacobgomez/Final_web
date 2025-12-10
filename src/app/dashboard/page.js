@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import GenreWidget from "@/components/Widgets/GenreWidget";
+import DecadeWidget from "@/components/Widgets/DecadeWidget";
+import PopularityWidget from "@/components/Widgets/PopularityWidget";
 
 
 export default function DashboardPage() {
@@ -69,19 +71,26 @@ export default function DashboardPage() {
                 />
             </div>
 
-             <div className="card widget-placeholder">
-              <h3 className="widget-titulo">Widget de décadas</h3>
-              <p className="widget-texto">
-                Aquí seleccionarás las épocas que más te gustan.
-              </p>
-            </div>
+            <DecadeWidget
+              decadasSeleccionadas={preferencias.decadas}
+              onCambiarDecadas={(nuevasDecadas) =>
+                setPreferencias((previas) => ({
+                  ...previas,
+                  decadas: nuevasDecadas,
+                }))
+              }
+            />
 
-            <div className="card widget-placeholder">
-              <h3 className="widget-titulo">Widget de popularidad</h3>
-              <p className="widget-texto">
-                Aquí ajustarás si quieres temas más conocidos o joyas ocultas.
-              </p>
-            </div>
+
+            <PopularityWidget
+              popularidad={preferencias.popularidad}
+              onCambiarPopularidad={(nuevaPopularidad) =>
+                setPreferencias((previas) => ({
+                  ...previas,
+                  popularidad: nuevaPopularidad,
+                }))
+              }
+            />
             <div className="card widget-placeholder">
               <h3 className="widget-titulo">Widget de artistas</h3>
               <p className="widget-texto">

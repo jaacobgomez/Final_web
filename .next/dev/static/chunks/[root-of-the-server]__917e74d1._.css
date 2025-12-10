@@ -859,6 +859,121 @@ body {
   font-size: .75rem;
 }
 
+.widget-decadas {
+  flex-direction: column;
+  gap: .6rem;
+  display: flex;
+}
+
+.lista-decadas {
+  flex-wrap: wrap;
+  gap: .4rem;
+  display: flex;
+}
+
+.boton-decada {
+  color: inherit;
+  cursor: pointer;
+  background-color: #0000;
+  border: 1px solid #ffffff26;
+  border-radius: 999px;
+  padding: .35rem .7rem;
+  font-size: .75rem;
+  transition: background-color .15s, border-color .15s, transform .1s;
+}
+
+.boton-decada:hover {
+  background-color: #ffffff14;
+  border-color: #fff9;
+}
+
+.boton-decada-activa {
+  color: #000;
+  background-color: #3b82f6;
+  border-color: #3b82f6;
+  transform: translateY(-1px);
+}
+
+.boton-info-decadas {
+  color: var(--foreground-muted);
+  cursor: pointer;
+  background-color: #0000;
+  border: 1px solid #ffffff26;
+  border-radius: 999px;
+  align-self: flex-start;
+  margin-top: .15rem;
+  padding: .25rem .6rem;
+  font-size: .7rem;
+}
+
+.boton-info-decadas:hover {
+  background-color: #ffffff0d;
+}
+
+.lista-detalle-decadas {
+  color: var(--foreground-muted);
+  margin: .25rem 0 0;
+  padding-left: 1rem;
+  font-size: .7rem;
+}
+
+.widget-popularidad {
+  flex-direction: column;
+  gap: .7rem;
+  display: flex;
+}
+
+.botones-popularidad {
+  flex-wrap: wrap;
+  gap: .4rem;
+  display: flex;
+}
+
+.boton-popularidad {
+  color: inherit;
+  cursor: pointer;
+  background-color: #0000;
+  border: 1px solid #ffffff26;
+  border-radius: 999px;
+  padding: .35rem .7rem;
+  font-size: .75rem;
+  transition: background-color .15s, border-color .15s, transform .1s;
+}
+
+.boton-popularidad:hover {
+  background-color: #ffffff14;
+  border-color: #fff9;
+}
+
+.boton-popularidad-activo {
+  color: #000;
+  background-color: #f97316;
+  border-color: #f97316;
+  transform: translateY(-1px);
+}
+
+.popularidad-slider-bloque {
+  flex-direction: column;
+  gap: .25rem;
+  display: flex;
+}
+
+.popularidad-label {
+  color: var(--foreground-muted);
+  font-size: .75rem;
+}
+
+.popularidad-slider {
+  width: 100%;
+}
+
+.popularidad-rango {
+  color: var(--foreground-muted);
+  justify-content: space-between;
+  font-size: .75rem;
+  display: flex;
+}
+
 @property --tw-border-style {
   syntax: "*";
   inherits: false;

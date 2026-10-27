@@ -1,18 +1,12 @@
 'use client';
 
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { isAuthenticated, getSpotifyAuthUrl } from '@/lib/auth';
+import Link from 'next/link';
+import { getSpotifyAuthUrl, logout } from '@/lib/auth';
+import { useSesion } from '@/lib/useSesion';
 
 export default function PaginaInicio() {
-  const router = useRouter();
-
-  // Si ya está logueado, lo mandamos directo al dashboard
-  useEffect(() => {
-    if (isAuthenticated()) {
-      router.push('/dashboard');
-    }
-  }, [router]);
+  // null = todavía no sabemos (render del servidor), true/false = con o sin sesión
+  const sesion = useSesion();
 
   const manejarLoginSpotify = () => {
     const url = getSpotifyAuthUrl();
@@ -20,7 +14,7 @@ export default function PaginaInicio() {
   };
 
   return (
-   <section className="portada-inicio">
+    <section className="portada-inicio">
       <div className="tarjeta-inicio card">
         <p className="texto-pequeno">Para amigos · Hecho por Jacob</p>
 
@@ -37,17 +31,36 @@ export default function PaginaInicio() {
           <li>📱 Interfaz oscura, sencilla y adaptada a móvil.</li>
         </ul>
 
-        <button
-          type="button"
-          onClick={manejarLoginSpotify}
-          className="boton-inicio"
-        >
-          Iniciar sesión con Spotify
-        </button>
+        {sesion === true && (
+          <>
+            <p className="texto-descripcion">✅ Ya has iniciado sesión con Spotify.</p>
+            <Link href="/dashboard" className="boton-inicio">
+              Ir al panel de mezcla
+            </Link>
+            <p className="nota-inicio">
+              ¿No eres tú?{' '}
+              <button type="button" className="boton-info-decadas" onClick={logout}>
+                Cerrar sesión
+              </button>
+            </p>
+          </>
+        )}
 
-        <p className="nota-inicio">
-          Acceso por invitación: tu correo de Spotify tiene que estar dado de alta en la app.
-        </p>
+        {sesion === false && (
+          <>
+            <button
+              type="button"
+              onClick={manejarLoginSpotify}
+              className="boton-inicio"
+            >
+              Iniciar sesión con Spotify
+            </button>
+
+            <p className="nota-inicio">
+              Acceso por invitación: tu correo de Spotify tiene que estar dado de alta en la app.
+            </p>
+          </>
+        )}
       </div>
     </section>
   );

@@ -2,32 +2,17 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { isAuthenticated } from "@/lib/auth";
+import { logout } from "@/lib/auth";
+import { useSesion } from "@/lib/useSesion";
 
 export default function Cabecera() {
   const rutaActual = usePathname();
   const router = useRouter();
-  const [autenticado, setAutenticado] = useState(false);
-
-  // Verificar estado de autenticación al cargar y cuando la ruta cambie
-    useEffect(() => {
-    try {
-      setAutenticado(isAuthenticated());
-    } catch (error) {
-      setAutenticado(false);
-    }
-  }, [rutaActual, isAuthenticated]);
-
+  const autenticado = useSesion() === true;
 
   // IMPORTANTE: el nombre de la función coincide con el onClick
   const manejarLogout = () => {
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("spotify_token");
-      localStorage.removeItem("spotify_refresh_token");
-      localStorage.removeItem("spotify_token_expiration");
-    }
-    setAutenticado(false);
+    logout();
     router.push("/");
   };
 

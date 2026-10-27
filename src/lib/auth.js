@@ -39,6 +39,24 @@ export function getSpotifyAuthUrl() {
   return `https://accounts.spotify.com/authorize?${params.toString()}`;
 }
 
+// Aviso para que la cabecera y la portada se enteren al momento de login/logout
+const EVENTO_SESION = 'sesion-cambiada';
+
+function avisarCambioSesion() {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(EVENTO_SESION));
+  }
+}
+
+export function suscribirseSesion(callback) {
+  window.addEventListener(EVENTO_SESION, callback);
+  window.addEventListener('storage', callback); // otras pestañas
+  return () => {
+    window.removeEventListener(EVENTO_SESION, callback);
+    window.removeEventListener('storage', callback);
+  };
+}
+
 // Guardar tokens en localStorage
 export function saveTokens(accessToken, refreshToken, expiresIn) {
   const expirationTime = Date.now() + expiresIn * 1000;
@@ -47,6 +65,7 @@ export function saveTokens(accessToken, refreshToken, expiresIn) {
     localStorage.setItem('spotify_refresh_token', refreshToken);
   }
   localStorage.setItem('spotify_token_expiration', expirationTime.toString());
+  avisarCambioSesion();
 }
 
 // Obtener token actual (con verificación de expiración)
@@ -100,4 +119,5 @@ export function logout() {
   localStorage.removeItem('spotify_token');
   localStorage.removeItem('spotify_refresh_token');
   localStorage.removeItem('spotify_token_expiration');
+  avisarCambioSesion();
 }

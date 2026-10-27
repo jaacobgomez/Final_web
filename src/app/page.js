@@ -2,15 +2,15 @@
 
 import Link from 'next/link';
 import { getSpotifyAuthUrl, logout } from '@/lib/auth';
-import { useSesion } from '@/lib/useSesion';
+import { useClientIdPropio, useSesion } from '@/lib/useSesion';
 
 export default function PaginaInicio() {
   // null = todavía no sabemos (render del servidor), true/false = con o sin sesión
   const sesion = useSesion();
+  const clientIdPropio = useClientIdPropio();
 
-  const manejarLoginSpotify = () => {
-    const url = getSpotifyAuthUrl();
-    window.location.href = url;
+  const manejarLoginSpotify = async () => {
+    window.location.href = await getSpotifyAuthUrl();
   };
 
   return (
@@ -56,9 +56,17 @@ export default function PaginaInicio() {
               Iniciar sesión con Spotify
             </button>
 
-            <p className="nota-inicio">
-              Acceso por invitación: tu correo de Spotify tiene que estar dado de alta en la app.
-            </p>
+            {clientIdPropio ? (
+              <p className="nota-inicio">
+                Entrarás con tu propia clave.{' '}
+                <Link href="/mi-clave">Cambiarla</Link>
+              </p>
+            ) : (
+              <p className="nota-inicio">
+                Acceso por invitación: tu correo de Spotify tiene que estar dado de alta en la app.{' '}
+                <Link href="/mi-clave">¿No estás en la lista? Usa tu propia clave</Link>
+              </p>
+            )}
           </>
         )}
       </div>

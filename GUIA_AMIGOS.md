@@ -27,3 +27,9 @@ Si alguien no está dado de alta, la app le dirá que pida acceso.
 - Botón **Guardar en mi Spotify**.
 - La sesión se renueva sola; ya no caduca a la hora.
 - Solo usa endpoints que siguen vivos tras los cambios de la API de febrero de 2026.
+
+## 5. Más de 5 personas: "usa tu propia clave"
+Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista? Usa tu propia clave"** (`/mi-clave`).
+- Cada persona crea gratis su propia app en developer.spotify.com (necesita **Premium**), con el Redirect URI que le muestra la página, y pega su **Client ID** (nunca el secret).
+- El login usa **PKCE**: el navegador habla directamente con Spotify; tu servidor y tu secreto no intervienen.
+- El Client ID se guarda solo en su dispositivo. Desde `/mi-clave` puede dejar de usarlo.

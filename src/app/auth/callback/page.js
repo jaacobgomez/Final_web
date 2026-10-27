@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { saveTokens } from '@/lib/auth';
+import { intercambiarCodigo } from '@/lib/auth';
 
 function PantallaCargando() {
   return (
@@ -65,20 +65,8 @@ function CallbackContenido() {
     // Intercambiar código por token
     const exchangeCodeForToken = async (code) => {
       try {
-        const response = await fetch('/api/spotify-token', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ code })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Error al obtener token');
-        }
-
-        // Guardar tokens
-        saveTokens(data.access_token, data.refresh_token, data.expires_in);
+        // Con la clave de Jacob (vía /api) o con la clave propia del usuario (PKCE)
+        await intercambiarCodigo(code);
 
         // Redirigir al dashboard
         router.push('/dashboard');

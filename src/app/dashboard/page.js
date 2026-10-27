@@ -193,13 +193,15 @@ export default function DashboardPage() {
             }
           />
 
+        </div>
+
+        <div className="dashboard-columna-derecha">
+          {/* Junto al botón de generar, que es donde se busca */}
           <MezclaWidget
             opciones={opcionesMezcla}
             onCambiarOpciones={setOpcionesMezcla}
           />
-        </div>
 
-        <div className="dashboard-columna-derecha">
           <PlaylistDisplay
             tracks={listaReproduccion}
             loading={cargandoPlaylist}

@@ -16,6 +16,9 @@ export default function PlaylistDisplay({
   onGenerate,
   onAddMore,
   onSave,
+  onUpdate,
+  guardada,
+  hayCambiosSinGuardar,
   estadoGuardado,
   isFavorite,
   onToggleFavorite,
@@ -72,21 +75,46 @@ export default function PlaylistDisplay({
             onChange={(e) => setNombre(e.target.value)}
             aria-label="Nombre de la playlist"
           />
-          <button
-            type="button"
-            className="boton-playlist"
-            onClick={() => onSave(nombre.trim() || nombrePorDefecto())}
-            disabled={loading || estadoGuardado.guardando}
-          >
-            {estadoGuardado.guardando ? "Guardando..." : "Guardar en mi Spotify"}
-          </button>
+          {guardada ? (
+            <>
+              <button
+                type="button"
+                className="boton-playlist"
+                onClick={onUpdate}
+                disabled={loading || estadoGuardado.guardando || !hayCambiosSinGuardar}
+              >
+                {estadoGuardado.guardando
+                  ? "Guardando..."
+                  : `Actualizar «${guardada.nombre}» en Spotify`}
+              </button>
+              <button
+                type="button"
+                className="boton-playlist secundario"
+                onClick={() => onSave(nombre.trim() || nombrePorDefecto())}
+                disabled={loading || estadoGuardado.guardando}
+              >
+                Guardar como nueva
+              </button>
+            </>
+          ) : (
+            <button
+              type="button"
+              className="boton-playlist"
+              onClick={() => onSave(nombre.trim() || nombrePorDefecto())}
+              disabled={loading || estadoGuardado.guardando}
+            >
+              {estadoGuardado.guardando ? "Guardando..." : "Guardar en mi Spotify"}
+            </button>
+          )}
         </div>
       )}
 
-      {estadoGuardado.url && (
+      {guardada && (
         <p className="texto-estado-busqueda">
-          ✅ Guardada.{" "}
-          <a href={estadoGuardado.url} target="_blank" rel="noreferrer">
+          {hayCambiosSinGuardar
+            ? "✏️ Tienes cambios sin guardar en Spotify."
+            : estadoGuardado.mensaje || "✅ Todo guardado en Spotify."}{" "}
+          <a href={guardada.url} target="_blank" rel="noreferrer">
             Abrir en Spotify
           </a>
         </p>

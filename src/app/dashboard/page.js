@@ -3,7 +3,11 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
-import { generarPlaylist, guardarPlaylistEnSpotify } from "@/lib/spotify";
+import {
+  actualizarPlaylistEnSpotify,
+  generarPlaylist,
+  guardarPlaylistEnSpotify,
+} from "@/lib/spotify";
 import GenreWidget from "@/components/Widgets/GenreWidget";
 import DecadeWidget from "@/components/Widgets/DecadeWidget";
 import MezclaWidget from "@/components/Widgets/MezclaWidget";
@@ -33,7 +37,12 @@ export default function DashboardPage() {
   const [errorPlaylist, setErrorPlaylist] = useState("");
   const [avisos, setAvisos] = useState([]);
   const [vecesAnadidas, setVecesAnadidas] = useState(0);
-  const [estadoGuardado, setEstadoGuardado] = useState({ guardando: false, url: "", error: "" });
+  const [estadoGuardado, setEstadoGuardado] = useState({ guardando: false, mensaje: "", error: "" });
+  // Playlist ya creada en Spotify: { id, url, nombre, ids } (ids = canciones en el último guardado)
+  const [guardada, setGuardada] = useState(null);
+
+  const idsActuales = listaReproduccion.map((t) => t.id).join(",");
+  const hayCambiosSinGuardar = guardada !== null && guardada.ids !== idsActuales;
 
   // Si no está autenticado, devolverlo al inicio
   useEffect(() => {
@@ -59,7 +68,7 @@ export default function DashboardPage() {
     setCargandoPlaylist(true);
     setErrorPlaylist("");
     setAvisos([]);
-    setEstadoGuardado({ guardando: false, url: "", error: "" });
+    setEstadoGuardado({ guardando: false, mensaje: "", error: "" });
 
     try {
       const { tracks, avisos } = await generarPlaylist(preferencias, opcionesMezcla);
@@ -110,16 +119,35 @@ export default function DashboardPage() {
 
   // Crear la playlist de verdad en la cuenta de Spotify del usuario
   async function manejarGuardar(nombre) {
-    setEstadoGuardado({ guardando: true, url: "", error: "" });
+    setEstadoGuardado({ guardando: true, mensaje: "", error: "" });
     try {
-      const url = await guardarPlaylistEnSpotify(nombre, listaReproduccion);
-      setEstadoGuardado({ guardando: false, url, error: "" });
+      const { id, url } = await guardarPlaylistEnSpotify(nombre, listaReproduccion);
+      setGuardada({ id, url, nombre, ids: idsActuales });
+      setEstadoGuardado({ guardando: false, mensaje: "✅ Guardada en tu Spotify.", error: "" });
     } catch (error) {
       console.error(error);
       setEstadoGuardado({
         guardando: false,
-        url: "",
+        mensaje: "",
         error: error.message || "No se pudo guardar en Spotify.",
+      });
+    }
+  }
+
+  // Sustituir las canciones de la playlist ya guardada por las actuales
+  async function manejarActualizar() {
+    if (!guardada) return;
+    setEstadoGuardado({ guardando: true, mensaje: "", error: "" });
+    try {
+      await actualizarPlaylistEnSpotify(guardada.id, listaReproduccion);
+      setGuardada((prev) => ({ ...prev, ids: idsActuales }));
+      setEstadoGuardado({ guardando: false, mensaje: `✅ «${guardada.nombre}» actualizada.`, error: "" });
+    } catch (error) {
+      console.error(error);
+      setEstadoGuardado({
+        guardando: false,
+        mensaje: "",
+        error: error.message || "No se pudo actualizar la playlist.",
       });
     }
   }
@@ -210,6 +238,9 @@ export default function DashboardPage() {
             onGenerate={manejarGenerar}
             onAddMore={agregarMasCanciones}
             onSave={manejarGuardar}
+            onUpdate={manejarActualizar}
+            guardada={guardada}
+            hayCambiosSinGuardar={hayCambiosSinGuardar}
             estadoGuardado={estadoGuardado}
             isFavorite={esFavorito}
             onToggleFavorite={toggleFavorito}

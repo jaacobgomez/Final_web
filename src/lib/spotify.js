@@ -329,5 +329,26 @@ export async function guardarPlaylistEnSpotify(nombre, tracks, publica = false) 
     });
   }
 
-  return playlist.external_urls?.spotify || `https://open.spotify.com/playlist/${playlist.id}`;
+  return {
+    id: playlist.id,
+    url: playlist.external_urls?.spotify || `https://open.spotify.com/playlist/${playlist.id}`,
+  };
+}
+
+// Sustituir las canciones de una playlist ya guardada por las de la lista actual.
+// PUT reemplaza (máx. 100 por llamada); el resto se añade con POST.
+export async function actualizarPlaylistEnSpotify(playlistId, tracks) {
+  const uris = tracks.map((t) => t.uri).filter(Boolean);
+
+  await spotifyFetch(`/playlists/${playlistId}/items`, {
+    method: 'PUT',
+    body: JSON.stringify({ uris: uris.slice(0, 100) }),
+  });
+
+  for (let i = 100; i < uris.length; i += 100) {
+    await spotifyFetch(`/playlists/${playlistId}/items`, {
+      method: 'POST',
+      body: JSON.stringify({ uris: uris.slice(i, i + 100) }),
+    });
+  }
 }

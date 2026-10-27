@@ -23,8 +23,30 @@ export default function PlaylistDisplay({
   isFavorite,
   onToggleFavorite,
   onRemoveTrack,
+  nombreSugerido,
 }) {
-  const [nombre, setNombre] = useState(nombrePorDefecto);
+  const [nombre, setNombre] = useState(() => nombreSugerido || nombrePorDefecto());
+  const [publica, setPublica] = useState(true);
+  const [avisoCompartir, setAvisoCompartir] = useState("");
+
+  // Menú de compartir del móvil; si no existe (ordenador), WhatsApp Web
+  const compartir = async () => {
+    const texto = `Escucha «${guardada.nombre}», hecha con Taste Mixer`;
+    if (navigator.share) {
+      try {
+        await navigator.share({ title: guardada.nombre, text: texto, url: guardada.url });
+      } catch {
+        // el usuario canceló el menú de compartir
+      }
+      return;
+    }
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(`${texto}: ${guardada.url}`)}`,
+      "_blank",
+      "noreferrer"
+    );
+    setAvisoCompartir("Abriendo WhatsApp…");
+  };
 
   const minutosTotales = Math.round(
     tracks.reduce((total, t) => total + (t.duration_ms || 0), 0) / 60000
@@ -90,7 +112,7 @@ export default function PlaylistDisplay({
               <button
                 type="button"
                 className="boton-playlist secundario"
-                onClick={() => onSave(nombre.trim() || nombrePorDefecto())}
+                onClick={() => onSave(nombre.trim() || nombrePorDefecto(), publica)}
                 disabled={loading || estadoGuardado.guardando}
               >
                 Guardar como nueva
@@ -100,12 +122,20 @@ export default function PlaylistDisplay({
             <button
               type="button"
               className="boton-playlist"
-              onClick={() => onSave(nombre.trim() || nombrePorDefecto())}
+              onClick={() => onSave(nombre.trim() || nombrePorDefecto(), publica)}
               disabled={loading || estadoGuardado.guardando}
             >
               {estadoGuardado.guardando ? "Guardando..." : "Guardar en mi Spotify"}
             </button>
           )}
+          <label className="popularidad-label">
+            <input
+              type="checkbox"
+              checked={publica}
+              onChange={(e) => setPublica(e.target.checked)}
+            />{" "}
+            Pública (para poder compartirla con tus amigos)
+          </label>
         </div>
       )}
 
@@ -117,6 +147,19 @@ export default function PlaylistDisplay({
           <a href={guardada.url} target="_blank" rel="noreferrer">
             Abrir en Spotify
           </a>
+        </p>
+      )}
+      {guardada && (
+        <div className="botones-playlist">
+          <button type="button" className="boton-playlist secundario" onClick={compartir}>
+            📤 Compartir
+          </button>
+          {avisoCompartir && <span className="texto-estado-busqueda">{avisoCompartir}</span>}
+        </div>
+      )}
+      {guardada && guardada.publica === false && (
+        <p className="texto-estado-busqueda">
+          🔒 Es privada: tus amigos no podrán abrirla. Hazla pública en Spotify (⋯ → Hacer pública).
         </p>
       )}
       {estadoGuardado.error && (

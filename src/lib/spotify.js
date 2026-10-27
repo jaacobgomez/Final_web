@@ -102,6 +102,31 @@ async function obtenerMisGuardadas(limite = 50) {
   return (datos.items || []).map((item) => item.track).filter(Boolean);
 }
 
+export async function obtenerMiPerfil() {
+  return spotifyFetch('/me');
+}
+
+// Solo las playlists que son tuyas (Spotify no deja leer las de otros en modo desarrollo)
+export async function obtenerMisPlaylists() {
+  const [perfil, datos] = await Promise.all([
+    obtenerMiPerfil(),
+    spotifyFetch('/me/playlists?limit=50'),
+  ]);
+  return (datos.items || []).filter((p) => p?.owner?.id === perfil.id);
+}
+
+// Lo que se comparte en la mezcla de grupo: nombre y 10 artistas favoritos
+export async function obtenerMiGusto() {
+  const [perfil, artistas] = await Promise.all([
+    obtenerMiPerfil(),
+    obtenerMisTops('artists', 10),
+  ]);
+  return {
+    nombre: (perfil.display_name || 'Yo').split(' ')[0],
+    artistas: artistas.map((a) => ({ id: a.id, name: a.name })),
+  };
+}
+
 // ---------- Generador de playlists ----------
 
 // Los géneros del widget en el formato que entiende el filtro genre: de la búsqueda
@@ -197,6 +222,28 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     fuentes.push({ consulta: `genre:"${generoParaBusqueda(genero)}"`, elegida: false });
   }
 
+  // Empezar desde una playlist tuya: sus artistas más repetidos como semillas
+  let cancionesBase = [];
+  if (preferencias.playlistBase) {
+    try {
+      cancionesBase = await obtenerCancionesPlaylist(preferencias.playlistBase.id);
+      const porArtista = new Map();
+      for (const track of cancionesBase) {
+        const artista = track.artists?.[0];
+        if (!artista) continue;
+        const actual = porArtista.get(artista.id) || { name: artista.name, veces: 0 };
+        actual.veces += 1;
+        porArtista.set(artista.id, actual);
+      }
+      [...porArtista.values()]
+        .sort((a, b) => b.veces - a.veces)
+        .slice(0, 6)
+        .forEach((a) => fuentes.push({ consulta: `artist:"${a.name}"`, elegida: true }));
+    } catch (error) {
+      avisos.push('No he podido leer esa playlist.');
+    }
+  }
+
   const sinSemillas = fuentes.length === 0;
   if (usarMiGusto || sinSemillas) {
     try {
@@ -211,11 +258,19 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   }
 
   if (fuentes.length === 0) {
-    return { tracks: [], avisos: ['Elige al menos un artista, canción o género.'] };
+    return { tracks: [], avisos: ['Elige al menos un artista, canción, género o playlist.'] };
   }
+
+  const unicas = new Map();
+  for (const fuente of fuentes) {
+    const previa = unicas.get(fuente.consulta);
+    unicas.set(fuente.consulta, { ...fuente, elegida: fuente.elegida || previa?.elegida });
+  }
+  fuentes.splice(0, fuentes.length, ...unicas.values());
 
   // 2) Canciones a excluir: las ya añadidas y, en modo Descubrir, las que ya conoces
   const excluidas = new Set(excluirIds);
+  cancionesBase.forEach((t) => excluidas.add(t.id));
   if (modo === 'descubrir') {
     try {
       const [misTops, misGuardadas] = await Promise.all([
@@ -309,6 +364,47 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   return { tracks: resultado, avisos };
 }
 
+// ---------- Mezcla de grupo ----------
+
+/*
+  participantes = [{ nombre, artistas: [{ id, name }] }]
+  Primero los artistas que tenéis en común (los de más gente antes); después,
+  por turnos, los favoritos de cada uno para que todos estén representados.
+*/
+export async function generarMezclaGrupo(participantes, opciones = {}) {
+  const cuenta = new Map();
+  participantes.forEach((p) =>
+    p.artistas.forEach((a) => {
+      const actual = cuenta.get(a.id) || { ...a, personas: new Set() };
+      actual.personas.add(p.nombre);
+      cuenta.set(a.id, actual);
+    })
+  );
+
+  const comunes = [...cuenta.values()]
+    .filter((a) => a.personas.size >= 2)
+    .sort((a, b) => b.personas.size - a.personas.size);
+
+  const MAX_ARTISTAS = 10;
+  const elegidos = comunes.slice(0, 6).map(({ id, name }) => ({ id, name }));
+  const yaElegido = (id) => elegidos.some((a) => a.id === id);
+
+  for (let ronda = 0; elegidos.length < MAX_ARTISTAS && ronda < 10; ronda++) {
+    for (const p of participantes) {
+      if (elegidos.length >= MAX_ARTISTAS) break;
+      const siguiente = p.artistas.filter((a) => !yaElegido(a.id))[0];
+      if (siguiente) elegidos.push(siguiente);
+    }
+  }
+
+  const { tracks, avisos } = await generarPlaylist(
+    { artistas: elegidos, canciones: [], generos: [], decadas: [] },
+    { modo: 'equilibrado', objetivo: { tipo: 'canciones', valor: 30 }, ...opciones }
+  );
+
+  return { tracks, avisos, comunes: comunes.map((a) => a.name) };
+}
+
 // ---------- Guardar en Spotify ----------
 
 export async function guardarPlaylistEnSpotify(nombre, tracks, publica = false) {
@@ -336,7 +432,7 @@ export async function guardarPlaylistEnSpotify(nombre, tracks, publica = false) 
 }
 
 // Canciones que hay ahora mismo en una playlist de Spotify (paginando de 50 en 50)
-async function obtenerCancionesPlaylist(playlistId) {
+export async function obtenerCancionesPlaylist(playlistId) {
   const canciones = [];
   let ruta = `/playlists/${playlistId}/items?limit=50`;
   while (ruta) {

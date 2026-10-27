@@ -33,3 +33,9 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - Cada persona crea gratis su propia app en developer.spotify.com (necesita **Premium**), con el Redirect URI que le muestra la página, y pega su **Client ID** (nunca el secret).
 - El login usa **PKCE**: el navegador habla directamente con Spotify; tu servidor y tu secreto no intervienen.
 - El Client ID se guarda solo en su dispositivo. Desde `/mi-clave` puede dejar de usarlo.
+
+## 6. Novedades
+- **Recuerda tu sesión:** al cerrar y abrir la app siguen tu lista, tus filtros y la playlist vinculada (se borra al cerrar sesión).
+- **Partir de una playlist tuya:** en el panel, "Partir de una playlist tuya" → genera más en su línea sin repetir lo que ya tiene.
+- **Compartir:** tras guardar, botón 📤 (menú del móvil o WhatsApp). Marca "Pública" al guardar para que tus amigos puedan abrirla.
+- **Mezcla de grupo** (`/grupo`): cada amigo pulsa "Compartir mi gusto" y te manda el enlace; tú los abres, pulsas "Generar mezcla de grupo" y la guardas en tu Spotify. Primero salen los artistas en común.

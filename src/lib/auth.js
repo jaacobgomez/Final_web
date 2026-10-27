@@ -218,5 +218,7 @@ export function logout() {
   localStorage.removeItem('spotify_token');
   localStorage.removeItem('spotify_refresh_token');
   localStorage.removeItem('spotify_token_expiration');
+  // La lista y la playlist vinculada son de esta cuenta: no deben verse con otra
+  localStorage.removeItem('taste_mixer_estado');
   avisarCambioSesion();
 }

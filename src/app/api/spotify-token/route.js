@@ -10,7 +10,6 @@ export async function POST(request) {
         { status: 400 }
       );
     }
-    console.log('Received code for token exchange:', code);
     const clientId = process.env.SPOTIFY_CLIENT_ID;
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
     const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI;
@@ -32,8 +31,6 @@ export async function POST(request) {
     });
 
     const data = await response.json();
-
-    console.log('Token exchange response data:', data);
 
     if (!response.ok) {
       return NextResponse.json(

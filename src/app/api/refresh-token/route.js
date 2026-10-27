@@ -37,8 +37,10 @@ export async function POST(request) {
       );
     }
 
+    // Spotify a veces devuelve un refresh_token nuevo: hay que guardarlo
     return NextResponse.json({
       access_token: data.access_token,
+      refresh_token: data.refresh_token,
       expires_in: data.expires_in
     });
 

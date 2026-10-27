@@ -3,7 +3,6 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { isAuthenticated, getSpotifyAuthUrl } from '@/lib/auth';
-import DashboardPage from "./dashboard/page";
 
 export default function PaginaInicio() {
   const router = useRouter();
@@ -23,7 +22,7 @@ export default function PaginaInicio() {
   return (
    <section className="portada-inicio">
       <div className="tarjeta-inicio card">
-        <p className="texto-pequeno">Proyecto final · Programación Web I</p>
+        <p className="texto-pequeno">Para amigos · Hecho por Jacob</p>
 
         <h2 className="titulo-inicio">Spotify Taste Mixer</h2>
 
@@ -34,7 +33,7 @@ export default function PaginaInicio() {
 
         <ul className="lista-caracteristicas">
           <li>🎧 Widgets para artistas, géneros y décadas.</li>
-          <li>⭐ Marca canciones como favoritas y guárdalas.</li>
+          <li>💾 Guarda la playlist directamente en tu Spotify.</li>
           <li>📱 Interfaz oscura, sencilla y adaptada a móvil.</li>
         </ul>
 
@@ -47,7 +46,7 @@ export default function PaginaInicio() {
         </button>
 
         <p className="nota-inicio">
-          Necesitas una cuenta de Spotify (gratuita o premium) para continuar.
+          Acceso por invitación: tu correo de Spotify tiene que estar dado de alta en la app.
         </p>
       </div>
     </section>

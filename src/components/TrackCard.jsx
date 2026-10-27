@@ -37,9 +37,16 @@ export default function TrackCard({
           <span className="track-card-duracion">
             {minutos}:{segundos}
           </span>
-          <span className="track-card-popularidad">
-            Popularidad: {track.popularity}
-          </span>
+          {track.external_urls?.spotify && (
+            <a
+              className="track-card-popularidad"
+              href={track.external_urls.spotify}
+              target="_blank"
+              rel="noreferrer"
+            >
+              Abrir en Spotify
+            </a>
+          )}
         </div>
       </div>
 

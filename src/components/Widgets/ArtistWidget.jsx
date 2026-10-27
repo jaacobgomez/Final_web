@@ -70,7 +70,7 @@ export default function ArtistWidget({
       <h3 className="widget-titulo">Artistas favoritos</h3>
       <p className="widget-texto">
         Busca artistas por nombre y selecciona hasta {limiteSeleccion}. Usaremos
-        sus canciones más populares al generar la playlist.
+        sus canciones (y las de su estilo) al generar la playlist.
       </p>
 
       <input
@@ -119,10 +119,11 @@ export default function ArtistWidget({
                   )}
                   <div className="info-artista">
                     <span className="nombre-artista">{artista.name}</span>
-                    <span className="detalle-artista">
-                      Popularidad: {artista.popularity} · Seguidores:{" "}
-                      {artista.followers?.total?.toLocaleString("es-ES")}
-                    </span>
+                    {artista.genres?.length > 0 && (
+                      <span className="detalle-artista">
+                        {artista.genres.slice(0, 2).join(" · ")}
+                      </span>
+                    )}
                   </div>
                 </button>
               </li>

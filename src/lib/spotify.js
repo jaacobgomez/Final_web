@@ -335,9 +335,56 @@ export async function guardarPlaylistEnSpotify(nombre, tracks, publica = false) 
   };
 }
 
-// Sustituir las canciones de una playlist ya guardada por las de la lista actual.
+// Canciones que hay ahora mismo en una playlist de Spotify (paginando de 50 en 50)
+async function obtenerCancionesPlaylist(playlistId) {
+  const canciones = [];
+  let ruta = `/playlists/${playlistId}/items?limit=50`;
+  while (ruta) {
+    const datos = await spotifyFetch(ruta);
+    for (const elemento of datos.items || []) {
+      // Tras los cambios de 2026 el campo puede llamarse "item" o "track"
+      const cancion = elemento.item || elemento.track;
+      if (cancion?.id && cancion.type !== 'episode') canciones.push(cancion);
+    }
+    ruta = datos.next ? datos.next.replace(API, '') : null;
+  }
+  return canciones;
+}
+
+/*
+  Actualiza una playlist ya guardada respetando lo que el usuario haya tocado
+  desde la app de Spotify desde el último guardado:
+  - lo añadido en Spotify se conserva (y se añade también a la lista de la app)
+  - lo quitado en Spotify no se vuelve a meter
+  idsUltimoGuardado = ids que tenía la playlist la última vez que la guardó la app.
+  Devuelve { tracks, conservadas, quitadasEnSpotify } con la lista final.
+*/
+export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUltimoGuardado) {
+  const guardadoAntes = new Set(idsUltimoGuardado);
+  const enSpotify = await obtenerCancionesPlaylist(playlistId);
+  const idsEnSpotify = new Set(enSpotify.map((t) => t.id));
+  const idsApp = new Set(tracksApp.map((t) => t.id));
+
+  // Quitadas a mano en Spotify: estaban en el último guardado y ya no están allí
+  const quitadas = new Set([...guardadoAntes].filter((id) => !idsEnSpotify.has(id)));
+  // Añadidas a mano en Spotify: están allí, no venían de la app y no están en la lista
+  const anadidasEnSpotify = enSpotify.filter(
+    (t) => !guardadoAntes.has(t.id) && !idsApp.has(t.id)
+  );
+
+  const final = [...tracksApp.filter((t) => !quitadas.has(t.id)), ...anadidasEnSpotify];
+  await reemplazarCanciones(playlistId, final);
+
+  return {
+    tracks: final,
+    conservadas: anadidasEnSpotify.length,
+    quitadasEnSpotify: tracksApp.filter((t) => quitadas.has(t.id)).length,
+  };
+}
+
+// Sustituir las canciones de una playlist por las indicadas.
 // PUT reemplaza (máx. 100 por llamada); el resto se añade con POST.
-export async function actualizarPlaylistEnSpotify(playlistId, tracks) {
+async function reemplazarCanciones(playlistId, tracks) {
   const uris = tracks.map((t) => t.uri).filter(Boolean);
 
   await spotifyFetch(`/playlists/${playlistId}/items`, {

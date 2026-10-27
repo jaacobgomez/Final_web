@@ -4,9 +4,9 @@ import { useEffect, useState } from 'react';
 import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import {
-  actualizarPlaylistEnSpotify,
   generarPlaylist,
   guardarPlaylistEnSpotify,
+  sincronizarPlaylistEnSpotify,
 } from "@/lib/spotify";
 import GenreWidget from "@/components/Widgets/GenreWidget";
 import DecadeWidget from "@/components/Widgets/DecadeWidget";
@@ -139,9 +139,27 @@ export default function DashboardPage() {
     if (!guardada) return;
     setEstadoGuardado({ guardando: true, mensaje: "", error: "" });
     try {
-      await actualizarPlaylistEnSpotify(guardada.id, listaReproduccion);
-      setGuardada((prev) => ({ ...prev, ids: idsActuales }));
-      setEstadoGuardado({ guardando: false, mensaje: `✅ «${guardada.nombre}» actualizada.`, error: "" });
+      const { tracks, conservadas, quitadasEnSpotify } = await sincronizarPlaylistEnSpotify(
+        guardada.id,
+        listaReproduccion,
+        guardada.ids.split(",")
+      );
+      // La app se queda igual que Spotify, incluidas las canciones añadidas allí
+      setListaReproduccion(tracks);
+      setGuardada((prev) => ({ ...prev, ids: tracks.map((t) => t.id).join(",") }));
+
+      const detalles = [];
+      if (conservadas > 0) {
+        detalles.push(`se han conservado ${conservadas} canciones que añadiste desde Spotify`);
+      }
+      if (quitadasEnSpotify > 0) {
+        detalles.push(`no he vuelto a meter ${quitadasEnSpotify} que quitaste allí`);
+      }
+      setEstadoGuardado({
+        guardando: false,
+        mensaje: `✅ «${guardada.nombre}» actualizada${detalles.length ? `: ${detalles.join(" y ")}` : ""}.`,
+        error: "",
+      });
     } catch (error) {
       console.error(error);
       setEstadoGuardado({

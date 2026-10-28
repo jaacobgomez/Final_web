@@ -15,6 +15,8 @@ export default function PlaylistDisplay({
   avisos = [],
   onGenerate,
   renderAnadirMas,
+  panelAnadirAbierto,
+  onPanelAnadir,
   onSave,
   onUpdate,
   guardada,
@@ -28,7 +30,6 @@ export default function PlaylistDisplay({
   const [nombre, setNombre] = useState(() => nombreSugerido || nombrePorDefecto());
   const [publica, setPublica] = useState(true);
   const [avisoCompartir, setAvisoCompartir] = useState("");
-  const [panelAnadir, setPanelAnadir] = useState(false);
 
   // Menú de compartir del móvil; si no existe (ordenador), WhatsApp Web
   const compartir = async () => {
@@ -49,14 +50,19 @@ export default function PlaylistDisplay({
     setAvisoCompartir("Abriendo WhatsApp…");
   };
 
+  // Canciones que aún no están en Spotify (solo si la lista está vinculada a una playlist)
+  const idsGuardados = guardada ? new Set(guardada.ids.split(",")) : null;
+
   const minutosTotales = Math.round(
     tracks.reduce((total, t) => total + (t.duration_ms || 0), 0) / 60000
   );
 
   return (
-    <div className="card bloque-playlist">
+    <div className="card bloque-playlist" id="playlist-generada">
       <div className="bloque-cabecera">
-        <h3 className="bloque-titulo">Playlist generada</h3>
+        <h3 className="bloque-titulo">
+          {guardada?.existente ? `Tu playlist «${guardada.nombre}»` : "Playlist generada"}
+        </h3>
         <p className="bloque-subtitulo">
           {tracks.length > 0
             ? `${tracks.length} canciones · ${minutosTotales} min`
@@ -77,14 +83,14 @@ export default function PlaylistDisplay({
         <button
           type="button"
           className="boton-playlist secundario"
-          onClick={() => setPanelAnadir((abierto) => !abierto)}
+          onClick={() => onPanelAnadir(!panelAnadirAbierto)}
           disabled={loading || tracks.length === 0}
         >
           Añadir más canciones
         </button>
       </div>
 
-      {panelAnadir && tracks.length > 0 && renderAnadirMas(() => setPanelAnadir(false))}
+      {panelAnadirAbierto && tracks.length > 0 && renderAnadirMas(() => onPanelAnadir(false))}
 
       {error && <p className="texto-error-busqueda">{error}</p>}
       {avisos.map((aviso) => (
@@ -183,6 +189,7 @@ export default function PlaylistDisplay({
               key={track.id}
               track={track}
               esFavorito={isFavorite(track.id)}
+              esNueva={idsGuardados !== null && !idsGuardados.has(track.id)}
               onToggleFavorito={onToggleFavorite}
               onEliminar={onRemoveTrack}
             />

@@ -8,6 +8,7 @@ import { cargarEstado, guardarEstado } from "@/lib/estado";
 import {
   generarPlaylist,
   guardarPlaylistEnSpotify,
+  obtenerCancionesPlaylist,
   sincronizarPlaylistEnSpotify,
 } from "@/lib/spotify";
 import GenreWidget from "@/components/Widgets/GenreWidget";
@@ -49,6 +50,8 @@ export default function DashboardPage() {
   const [estadoCargado, setEstadoCargado] = useState(false);
   // Filtros con los que se generó la lista: "Añadir más" los reutiliza
   const [ultimosParametros, setUltimosParametros] = useState(null);
+  const [panelAnadirAbierto, setPanelAnadirAbierto] = useState(false);
+  const [abriendoPlaylist, setAbriendoPlaylist] = useState(false);
 
   const idsActuales = listaReproduccion.map((t) => t.id).join(",");
   const hayCambiosSinGuardar = guardada !== null && guardada.ids !== idsActuales;
@@ -107,6 +110,9 @@ export default function DashboardPage() {
     setErrorPlaylist("");
     setAvisos([]);
     setEstadoGuardado({ guardando: false, mensaje: "", error: "" });
+    setPanelAnadirAbierto(false);
+    // Una lista nueva nunca debe sustituir a una playlist tuya abierta: se desvincula
+    if (guardada?.existente) setGuardada(null);
 
     try {
       const opciones = {
@@ -146,16 +152,66 @@ export default function DashboardPage() {
       setListaReproduccion((prev) => [...prev, ...tracks]);
       setVecesAnadidas(siguiente);
       setUltimosParametros(parametros);
+      const siguientePaso = guardada
+        ? `Pulsa «Actualizar «${guardada.nombre}» en Spotify» para guardarlas.`
+        : "Guarda la playlist para tenerlas en Spotify.";
       setAvisos(
         tracks.length === 0
           ? ["No quedan más canciones nuevas con estos filtros."]
-          : [`➕ Añadidas ${tracks.length} canciones.`, ...avisos]
+          : [
+              `➕ Añadidas ${tracks.length} canciones al final de la lista${guardada ? " (marcadas como NUEVA)" : ""}. ${siguientePaso}`,
+              ...avisos,
+            ]
       );
     } catch (error) {
       console.error(error);
       setErrorPlaylist(error.message || "Error al añadir más canciones.");
     } finally {
       setCargandoPlaylist(false);
+    }
+  }
+
+  // Abrir una playlist tuya para añadirle canciones: queda vinculada y "Actualizar" las guarda en ella
+  async function abrirPlaylistExistente(playlist) {
+    setAbriendoPlaylist(true);
+    setErrorPlaylist("");
+    setEstadoGuardado({ guardando: false, mensaje: "", error: "" });
+    try {
+      const tracks = await obtenerCancionesPlaylist(playlist.id);
+      setListaReproduccion(tracks);
+      setGuardada({
+        id: playlist.id,
+        url: playlist.external_urls?.spotify || `https://open.spotify.com/playlist/${playlist.id}`,
+        nombre: playlist.name,
+        ids: tracks.map((t) => t.id).join(","),
+        publica: playlist.public !== false,
+        existente: true,
+      });
+      setNombreSugerido(playlist.name);
+      setVecesAnadidas(0);
+      setUltimosParametros({
+        preferencias: {
+          artistas: [],
+          canciones: [],
+          generos: [],
+          decadas: [],
+          playlistBase: { id: playlist.id, name: playlist.name },
+        },
+        opcionesMezcla,
+      });
+      setAvisos([
+        `📂 Has abierto «${playlist.name}» (${tracks.length} canciones). Elige cuántas añadir; luego pulsa «Actualizar» para guardarlas en ella.`,
+      ]);
+      setPanelAnadirAbierto(true);
+      // En el móvil la lista queda más abajo: se baja hasta ella
+      requestAnimationFrame(() =>
+        document.getElementById("playlist-generada")?.scrollIntoView({ behavior: "smooth" })
+      );
+    } catch (error) {
+      console.error(error);
+      setErrorPlaylist(error.message || "No se pudo abrir la playlist.");
+    } finally {
+      setAbriendoPlaylist(false);
     }
   }
 
@@ -253,7 +309,10 @@ export default function DashboardPage() {
           </header>
 
           <PlaylistBaseWidget
+            key={estadoCargado ? "listo" : "cargando"}
             playlistBase={preferencias.playlistBase}
+            onAbrirPlaylist={abrirPlaylistExistente}
+            abriendo={abriendoPlaylist}
             onCambiarPlaylistBase={(playlistBase) =>
               setPreferencias((previas) => ({ ...previas, playlistBase }))
             }
@@ -306,6 +365,8 @@ export default function DashboardPage() {
             error={errorPlaylist}
             avisos={avisos}
             onGenerate={manejarGenerar}
+            panelAnadirAbierto={panelAnadirAbierto}
+            onPanelAnadir={setPanelAnadirAbierto}
             renderAnadirMas={(cerrar) => (
               <AnadirMasWidget
                 key={JSON.stringify(ultimosParametros)}

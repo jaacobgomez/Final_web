@@ -4,6 +4,7 @@
 export default function TrackCard({
   track,
   esFavorito,
+  esNueva = false,
   onToggleFavorito,
   onEliminar,
 }) {
@@ -27,7 +28,10 @@ export default function TrackCard({
 
       <div className="track-card-info">
         <div className="track-card-titulos">
-          <span className="track-card-nombre">{track.name}</span>
+          <span className="track-card-nombre">
+            {esNueva && <span className="etiqueta-nueva">NUEVA</span>}
+            {track.name}
+          </span>
           <span className="track-card-artista">
             {artistas} · {track.album?.name}
           </span>

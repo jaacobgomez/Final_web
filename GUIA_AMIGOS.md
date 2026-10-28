@@ -44,3 +44,5 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - **Número exacto**: si pides 50 canciones salen 50 (la app pide más páginas a Spotify hasta completarlo). Solo se queda corta si no existen tantas con esos filtros, y te avisa.
 - **Cantidad libre**: además de los botones, en "Otra:" eliges cualquier número de canciones (1-200) o de minutos (5-600).
 - **Añadir más con los mismos filtros**: abre un panel con los filtros de la última generación; puedes quitar uno a uno, quitarlos todos (usa tus más escuchados) o usar los que tengas ahora en el panel, y elegir cuántas más.
+- **Tus playlists**: al elegir una, puedes **añadirle canciones** (se abre en la lista, las nuevas salen marcadas como NUEVA y «Actualizar» las guarda en esa misma playlist) o **crear una nueva inspirada en ella** (la tuya no se toca).
+- «Actualizar» ya no reescribe la playlist: solo añade y quita lo que cambia, así que respeta el orden, los podcasts y los archivos locales.

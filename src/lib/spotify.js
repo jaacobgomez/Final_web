@@ -480,13 +480,7 @@ export async function guardarPlaylistEnSpotify(nombre, tracks, publica = false) 
     }),
   });
 
-  const uris = tracks.map((t) => t.uri).filter(Boolean);
-  for (let i = 0; i < uris.length; i += 100) {
-    await spotifyFetch(`/playlists/${playlist.id}/items`, {
-      method: 'POST',
-      body: JSON.stringify({ uris: uris.slice(i, i + 100) }),
-    });
-  }
+  await anadirCanciones(playlist.id, tracks);
 
   return {
     id: playlist.id,
@@ -511,10 +505,12 @@ export async function obtenerCancionesPlaylist(playlistId) {
 }
 
 /*
-  Actualiza una playlist ya guardada respetando lo que el usuario haya tocado
-  desde la app de Spotify desde el último guardado:
+  Actualiza una playlist ya guardada (o una tuya abierta en la app) respetando lo
+  que el usuario haya tocado desde la app de Spotify desde el último guardado:
   - lo añadido en Spotify se conserva (y se añade también a la lista de la app)
   - lo quitado en Spotify no se vuelve a meter
+  Solo se añaden y quitan las canciones que cambian: la playlist no se reescribe,
+  así que se mantienen su orden, sus episodios y sus archivos locales.
   idsUltimoGuardado = ids que tenía la playlist la última vez que la guardó la app.
   Devuelve { tracks, conservadas, quitadasEnSpotify } con la lista final.
 */
@@ -531,8 +527,18 @@ export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUlt
     (t) => !guardadoAntes.has(t.id) && !idsApp.has(t.id)
   );
 
-  const final = [...tracksApp.filter((t) => !quitadas.has(t.id)), ...anadidasEnSpotify];
-  await reemplazarCanciones(playlistId, final);
+  const aAnadir = tracksApp.filter((t) => !idsEnSpotify.has(t.id) && !quitadas.has(t.id));
+  const aQuitar = enSpotify.filter((t) => guardadoAntes.has(t.id) && !idsApp.has(t.id));
+  await quitarCanciones(playlistId, aQuitar);
+  await anadirCanciones(playlistId, aAnadir);
+
+  const idsQuitados = new Set(aQuitar.map((t) => t.id));
+  const vistos = new Set();
+  const final = [...enSpotify.filter((t) => !idsQuitados.has(t.id)), ...aAnadir].filter((t) => {
+    if (vistos.has(t.id)) return false;
+    vistos.add(t.id);
+    return true;
+  });
 
   return {
     tracks: final,
@@ -541,20 +547,24 @@ export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUlt
   };
 }
 
-// Sustituir las canciones de una playlist por las indicadas.
-// PUT reemplaza (máx. 100 por llamada); el resto se añade con POST.
-async function reemplazarCanciones(playlistId, tracks) {
+// Añadir canciones al final de una playlist (máx. 100 por llamada)
+async function anadirCanciones(playlistId, tracks) {
   const uris = tracks.map((t) => t.uri).filter(Boolean);
-
-  await spotifyFetch(`/playlists/${playlistId}/items`, {
-    method: 'PUT',
-    body: JSON.stringify({ uris: uris.slice(0, 100) }),
-  });
-
-  for (let i = 100; i < uris.length; i += 100) {
+  for (let i = 0; i < uris.length; i += 100) {
     await spotifyFetch(`/playlists/${playlistId}/items`, {
       method: 'POST',
       body: JSON.stringify({ uris: uris.slice(i, i + 100) }),
+    });
+  }
+}
+
+// Quitar canciones de una playlist (máx. 100 por llamada)
+async function quitarCanciones(playlistId, tracks) {
+  const items = [...new Set(tracks.map((t) => t.uri).filter(Boolean))].map((uri) => ({ uri }));
+  for (let i = 0; i < items.length; i += 100) {
+    await spotifyFetch(`/playlists/${playlistId}/items`, {
+      method: 'DELETE',
+      body: JSON.stringify({ items: items.slice(i, i + 100) }),
     });
   }
 }

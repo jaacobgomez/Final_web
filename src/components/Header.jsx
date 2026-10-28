@@ -66,6 +66,17 @@ export default function Cabecera() {
               </Link>
             </li>
 
+            <li className="panel-li">
+              <Link
+                href="/resumen"
+                className={`panel ${
+                  rutaActual?.startsWith("/resumen") ? "bg-white/10" : ""
+                }`}
+              >
+                Resumen
+              </Link>
+            </li>
+
             <li>
               {autenticado ? (
                 <button

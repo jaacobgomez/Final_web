@@ -50,3 +50,7 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - **🔄 Cambiar**: sustituye esa canción por otra del mismo artista, respetando las décadas y el modo.
 - **🚫 Vetar**: ese artista no vuelve a salir (ni en la mezcla de grupo). Se deshace en "Artistas vetados".
 - **🎨 Portada automática**: al guardar como nueva, le pone una portada con su nombre. La primera vez hay que cerrar sesión y volver a entrar para dar el permiso.
+- **↩️ Deshacer**: deshace la última acción (generar, añadir, cambiar, quitar, vetar u ordenar), hasta 10 pasos.
+- **⚡ Plantillas rápidas**: Estudiar, Gimnasio, Viaje en coche, Cena tranquila y Fiesta. Ponen los filtros y generan de un toque.
+- **🔀 Ordenar**: barajar, por año o alternando artistas. Al pulsar «Actualizar» el orden también llega a Spotify (salvo en playlists con podcasts o archivos locales, para no perderlos).
+- **📊 Resumen**: pestaña nueva con tu top de 4 semanas, 6 meses o desde siempre, imagen para stories y playlist con tu top.

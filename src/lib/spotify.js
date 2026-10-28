@@ -89,10 +89,11 @@ async function buscarTracks(consulta, offset = 0) {
 
 // ---------- Tu gusto ----------
 
-export async function obtenerMisTops(tipo = 'artists', limite = 10) {
+// periodo: 'short_term' (4 semanas), 'medium_term' (6 meses) o 'long_term' (desde siempre)
+export async function obtenerMisTops(tipo = 'artists', limite = 10, periodo = 'medium_term') {
   const parametros = new URLSearchParams({
     limit: String(limite),
-    time_range: 'medium_term',
+    time_range: periodo,
   });
   const datos = await spotifyFetch(`/me/top/${tipo}?${parametros}`);
   return datos.items || [];
@@ -502,7 +503,14 @@ export async function guardarPlaylistEnSpotify(nombre, tracks, publica = false) 
 
 // Canciones que hay ahora mismo en una playlist de Spotify (paginando de 50 en 50)
 export async function obtenerCancionesPlaylist(playlistId) {
+  const { canciones } = await leerPlaylist(playlistId);
+  return canciones;
+}
+
+// Canciones de la playlist y si además tiene episodios o archivos locales
+async function leerPlaylist(playlistId) {
   const canciones = [];
+  let hayOtros = false;
   let ruta = `/playlists/${playlistId}/items?limit=50`;
   while (ruta) {
     const datos = await spotifyFetch(ruta);
@@ -510,10 +518,11 @@ export async function obtenerCancionesPlaylist(playlistId) {
       // Tras los cambios de 2026 el campo puede llamarse "item" o "track"
       const cancion = elemento.item || elemento.track;
       if (cancion?.id && cancion.type !== 'episode') canciones.push(cancion);
+      else hayOtros = true;
     }
     ruta = datos.next ? datos.next.replace(API, '') : null;
   }
-  return canciones;
+  return { canciones, hayOtros };
 }
 
 /*
@@ -521,14 +530,16 @@ export async function obtenerCancionesPlaylist(playlistId) {
   que el usuario haya tocado desde la app de Spotify desde el último guardado:
   - lo añadido en Spotify se conserva (y se añade también a la lista de la app)
   - lo quitado en Spotify no se vuelve a meter
-  Solo se añaden y quitan las canciones que cambian: la playlist no se reescribe,
-  así que se mantienen su orden, sus episodios y sus archivos locales.
+  Normalmente solo se añaden y quitan las canciones que cambian, así que se
+  mantienen su orden, sus episodios y sus archivos locales. Si se ha reordenado
+  la lista en la app (ordenar = true), se reescribe en ese orden, salvo que tenga
+  episodios o archivos locales, que se perderían.
   idsUltimoGuardado = ids que tenía la playlist la última vez que la guardó la app.
-  Devuelve { tracks, conservadas, quitadasEnSpotify } con la lista final.
+  Devuelve { tracks, conservadas, quitadasEnSpotify, ordenAplicado } con la lista final.
 */
-export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUltimoGuardado) {
+export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUltimoGuardado, ordenar = false) {
   const guardadoAntes = new Set(idsUltimoGuardado);
-  const enSpotify = await obtenerCancionesPlaylist(playlistId);
+  const { canciones: enSpotify, hayOtros } = await leerPlaylist(playlistId);
   const idsEnSpotify = new Set(enSpotify.map((t) => t.id));
   const idsApp = new Set(tracksApp.map((t) => t.id));
 
@@ -538,6 +549,17 @@ export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUlt
   const anadidasEnSpotify = enSpotify.filter(
     (t) => !guardadoAntes.has(t.id) && !idsApp.has(t.id)
   );
+
+  if (ordenar && !hayOtros) {
+    const final = [...tracksApp.filter((t) => !quitadas.has(t.id)), ...anadidasEnSpotify];
+    await reemplazarCanciones(playlistId, final);
+    return {
+      tracks: final,
+      conservadas: anadidasEnSpotify.length,
+      quitadasEnSpotify: tracksApp.filter((t) => quitadas.has(t.id)).length,
+      ordenAplicado: true,
+    };
+  }
 
   const aAnadir = tracksApp.filter((t) => !idsEnSpotify.has(t.id) && !quitadas.has(t.id));
   const aQuitar = enSpotify.filter((t) => guardadoAntes.has(t.id) && !idsApp.has(t.id));
@@ -556,7 +578,24 @@ export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUlt
     tracks: final,
     conservadas: anadidasEnSpotify.length,
     quitadasEnSpotify: tracksApp.filter((t) => quitadas.has(t.id)).length,
+    ordenAplicado: false,
   };
+}
+
+// Sustituir las canciones por las indicadas, en ese orden.
+// PUT reemplaza (máx. 100 por llamada); el resto se añade con POST.
+async function reemplazarCanciones(playlistId, tracks) {
+  const uris = tracks.map((t) => t.uri).filter(Boolean);
+  await spotifyFetch(`/playlists/${playlistId}/items`, {
+    method: 'PUT',
+    body: JSON.stringify({ uris: uris.slice(0, 100) }),
+  });
+  for (let i = 100; i < uris.length; i += 100) {
+    await spotifyFetch(`/playlists/${playlistId}/items`, {
+      method: 'POST',
+      body: JSON.stringify({ uris: uris.slice(i, i + 100) }),
+    });
+  }
 }
 
 // Subir la portada (JPEG en base64, máx. 256 KB). Spotify responde 202 sin cuerpo,

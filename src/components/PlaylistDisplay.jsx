@@ -28,6 +28,9 @@ export default function PlaylistDisplay({
   onSwapTrack,
   cambiandoId,
   onBanArtist,
+  ultimaAccion,
+  onDeshacer,
+  onOrdenar,
   nombreSugerido,
 }) {
   const [nombre, setNombre] = useState(() => nombreSugerido || nombrePorDefecto());
@@ -97,6 +100,27 @@ export default function PlaylistDisplay({
       </div>
 
       {panelAnadirAbierto && tracks.length > 0 && renderAnadirMas(() => onPanelAnadir(false))}
+
+      {ultimaAccion && (
+        <button type="button" className="boton-info-decadas" onClick={onDeshacer} disabled={loading}>
+          ↩️ Deshacer: {ultimaAccion}
+        </button>
+      )}
+
+      {tracks.length > 1 && (
+        <div className="lista-decadas">
+          <span className="popularidad-label">Ordenar:</span>
+          <button type="button" className="boton-decada" onClick={() => onOrdenar("barajar")} disabled={loading}>
+            🔀 Barajar
+          </button>
+          <button type="button" className="boton-decada" onClick={() => onOrdenar("anio")} disabled={loading}>
+            📅 Por año
+          </button>
+          <button type="button" className="boton-decada" onClick={() => onOrdenar("alternar")} disabled={loading}>
+            🎤 Alternar artistas
+          </button>
+        </div>
+      )}
 
       {error && <p className="texto-error-busqueda">{error}</p>}
       {avisos.map((aviso) => (

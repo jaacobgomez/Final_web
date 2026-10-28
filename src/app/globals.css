@@ -959,3 +959,28 @@ body {
   grid-template-columns: repeat(3, 26px);
   gap: 0.25rem;
 }
+
+/* ==== Resumen musical ==== */
+
+.resumen-lista {
+  margin: 0;
+  padding-left: 1.4rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  text-align: left;
+  font-size: 0.85rem;
+}
+
+.resumen-lista li {
+  display: list-item;
+}
+
+.resumen-foto {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 0.5rem;
+}

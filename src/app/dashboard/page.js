@@ -7,6 +7,7 @@ import { isAuthenticated } from "@/lib/auth";
 import { cargarEstado, guardarEstado } from "@/lib/estado";
 import { cargarVetados, guardarVetados } from "@/lib/vetados";
 import { crearPortada } from "@/lib/portada";
+import { alternarArtistas, barajarLista, ordenarPorAnio } from "@/lib/ordenar";
 import {
   generarPlaylist,
   guardarPlaylistEnSpotify,
@@ -19,6 +20,7 @@ import DecadeWidget from "@/components/Widgets/DecadeWidget";
 import MezclaWidget, { ajustarObjetivo } from "@/components/Widgets/MezclaWidget";
 import AnadirMasWidget from "@/components/Widgets/AnadirMasWidget";
 import VetadosWidget from "@/components/Widgets/VetadosWidget";
+import PlantillasWidget from "@/components/Widgets/PlantillasWidget";
 import ArtistWidget from "@/components/Widgets/ArtistWidget";
 import TrackWidget from "@/components/Widgets/TrackWidget";
 import PlaylistBaseWidget from "@/components/Widgets/PlaylistBaseWidget";
@@ -58,6 +60,10 @@ export default function DashboardPage() {
   const [abriendoPlaylist, setAbriendoPlaylist] = useState(false);
   const [vetados, setVetados] = useState([]);
   const [cambiandoId, setCambiandoId] = useState(null);
+  // Para "Deshacer": cómo estaban la lista y los vetados antes de cada acción (máx. 10)
+  const [historial, setHistorial] = useState([]);
+  // Si se ha reordenado la lista, "Actualizar" también cambia el orden en Spotify
+  const [ordenCambiado, setOrdenCambiado] = useState(false);
 
   const idsActuales = listaReproduccion.map((t) => t.id).join(",");
   const hayCambiosSinGuardar = guardada !== null && guardada.ids !== idsActuales;
@@ -112,26 +118,49 @@ export default function DashboardPage() {
   }, [estadoCargado, preferencias, opcionesMezcla, listaReproduccion, guardada, avisos, nombreSugerido, ultimosParametros]);
 
   // Generar playlist usando las preferencias
-  async function manejarGenerar() {
+  // Guardar cómo estaba todo antes de una acción, para poder deshacerla
+  function apilar(descripcion, listaAntes = listaReproduccion, vetadosAntes = vetados) {
+    setHistorial((h) => [...h.slice(-9), { descripcion, listaReproduccion: listaAntes, vetados: vetadosAntes }]);
+  }
+
+  function deshacer() {
+    const ultimo = historial[historial.length - 1];
+    if (!ultimo) return;
+    setHistorial((h) => h.slice(0, -1));
+    setListaReproduccion(ultimo.listaReproduccion);
+    if (ultimo.vetados !== vetados) {
+      setVetados(ultimo.vetados);
+      guardarVetados(ultimo.vetados);
+    }
+    setAvisos([`↩️ Deshecho: ${ultimo.descripcion}.`]);
+  }
+
+  async function manejarGenerar(prefs = preferencias, opcionesBase = opcionesMezcla) {
+    const listaAntes = listaReproduccion;
     setCargandoPlaylist(true);
     setErrorPlaylist("");
     setAvisos([]);
     setEstadoGuardado({ guardando: false, mensaje: "", error: "" });
     setPanelAnadirAbierto(false);
     // Una lista nueva nunca debe sustituir a una playlist tuya abierta: se desvincula
-    if (guardada?.existente) setGuardada(null);
+    const desvincular = Boolean(guardada?.existente);
+    if (desvincular) {
+      setGuardada(null);
+      setHistorial([]);
+    }
 
     try {
       const opciones = {
-        ...opcionesMezcla,
-        objetivo: ajustarObjetivo(opcionesMezcla.objetivo.tipo, opcionesMezcla.objetivo.valor),
+        ...opcionesBase,
+        objetivo: ajustarObjetivo(opcionesBase.objetivo.tipo, opcionesBase.objetivo.valor),
       };
       setOpcionesMezcla(opciones);
-      const { tracks, avisos } = await generarPlaylist(preferencias, opciones);
+      const { tracks, avisos } = await generarPlaylist(prefs, opciones);
+      if (listaAntes.length > 0 && !desvincular) apilar("generar una lista nueva", listaAntes);
       setListaReproduccion(tracks);
       setAvisos(avisos);
       setVecesAnadidas(0);
-      setUltimosParametros({ preferencias, opcionesMezcla: opciones });
+      setUltimosParametros({ preferencias: prefs, opcionesMezcla: opciones });
     } catch (error) {
       console.error(error);
       setErrorPlaylist(
@@ -156,6 +185,7 @@ export default function DashboardPage() {
         excluirIds: listaReproduccion.map((t) => t.id),
         desplazamiento: siguiente,
       });
+      if (tracks.length > 0) apilar(`añadir ${tracks.length} canciones`);
       setListaReproduccion((prev) => [...prev, ...tracks]);
       setVecesAnadidas(siguiente);
       setUltimosParametros(parametros);
@@ -196,6 +226,8 @@ export default function DashboardPage() {
       });
       setNombreSugerido(playlist.name);
       setVecesAnadidas(0);
+      setHistorial([]);
+      setOrdenCambiado(false);
       setUltimosParametros({
         preferencias: {
           artistas: [],
@@ -228,6 +260,8 @@ export default function DashboardPage() {
     try {
       const { id, url } = await guardarPlaylistEnSpotify(nombre, listaReproduccion, publica);
       setGuardada({ id, url, nombre, ids: idsActuales, publica });
+      setHistorial([]);
+      setOrdenCambiado(false);
 
       // La portada es un extra: si falla, la playlist ya está guardada igualmente
       let aviso = "";
@@ -259,11 +293,15 @@ export default function DashboardPage() {
     if (!guardada) return;
     setEstadoGuardado({ guardando: true, mensaje: "", error: "" });
     try {
-      const { tracks, conservadas, quitadasEnSpotify } = await sincronizarPlaylistEnSpotify(
-        guardada.id,
-        listaReproduccion,
-        guardada.ids.split(",")
-      );
+      const { tracks, conservadas, quitadasEnSpotify, ordenAplicado } =
+        await sincronizarPlaylistEnSpotify(
+          guardada.id,
+          listaReproduccion,
+          guardada.ids.split(","),
+          ordenCambiado
+        );
+      const ordenSinAplicar = ordenCambiado && !ordenAplicado;
+      setOrdenCambiado(false);
       // La app se queda igual que Spotify, incluidas las canciones añadidas allí
       setListaReproduccion(tracks);
       setGuardada((prev) => ({ ...prev, ids: tracks.map((t) => t.id).join(",") }));
@@ -277,7 +315,11 @@ export default function DashboardPage() {
       }
       setEstadoGuardado({
         guardando: false,
-        mensaje: `✅ «${guardada.nombre}» actualizada${detalles.length ? `: ${detalles.join(" y ")}` : ""}.`,
+        mensaje: `✅ «${guardada.nombre}» actualizada${detalles.length ? `: ${detalles.join(" y ")}` : ""}.${
+          ordenSinAplicar
+            ? " El orden no lo he cambiado en Spotify porque tiene podcasts o archivos locales que se perderían."
+            : ""
+        }`,
         error: "",
       });
     } catch (error) {
@@ -290,7 +332,6 @@ export default function DashboardPage() {
     }
   }
 
-  // Eliminar una canción de la playlist
   // Cambiar una canción por otra del mismo artista (con las décadas y el modo de la última vez)
   async function cambiarCancion(track) {
     const artista = track.artists?.[0];
@@ -317,6 +358,7 @@ export default function DashboardPage() {
         setAvisos([`No quedan más canciones de ${artista.name} para cambiarla.`]);
         return;
       }
+      apilar(`cambiar «${track.name}»`);
       setListaReproduccion((prev) => prev.map((t) => (t.id === track.id ? tracks[0] : t)));
       setAvisos([`🔄 «${track.name}» → «${tracks[0].name}».`]);
     } catch (error) {
@@ -334,6 +376,7 @@ export default function DashboardPage() {
       `¿No quieres más canciones de ${artista.name}? Se quitarán sus ${suyas.length} de esta lista y no volverá a salir (puedes deshacerlo en "Artistas vetados").`
     );
     if (!confirmado) return;
+    apilar(`vetar a ${artista.name}`);
     const nuevos = [...vetados.filter((a) => a.id !== artista.id), { id: artista.id, name: artista.name }];
     setVetados(nuevos);
     guardarVetados(nuevos);
@@ -347,8 +390,32 @@ export default function DashboardPage() {
     guardarVetados(nuevos);
   }
 
+  // Eliminar una canción de la playlist
   function eliminarTrackDePlaylist(idTrack) {
+    const track = listaReproduccion.find((t) => t.id === idTrack);
+    apilar(`quitar «${track?.name || "la canción"}»`);
     setListaReproduccion((prev) => prev.filter((t) => t.id !== idTrack));
+  }
+
+  const ORDENES = {
+    barajar: { funcion: barajarLista, texto: "barajar" },
+    anio: { funcion: ordenarPorAnio, texto: "ordenar por año" },
+    alternar: { funcion: alternarArtistas, texto: "alternar artistas" },
+  };
+
+  function ordenarLista(tipo) {
+    const orden = ORDENES[tipo];
+    apilar(orden.texto);
+    setListaReproduccion(orden.funcion(listaReproduccion));
+    setOrdenCambiado(true);
+  }
+
+  // Plantilla: sustituye los filtros del panel y genera directamente
+  function aplicarPlantilla(plantilla) {
+    const prefs = { artistas: [], canciones: [], generos: plantilla.generos, decadas: [], playlistBase: null };
+    const opciones = { modo: plantilla.modo, objetivo: plantilla.objetivo, usarMiGusto: plantilla.usarMiGusto };
+    setPreferencias(prefs);
+    manejarGenerar(prefs, opciones);
   }
 
   // Toggle favorito y persistir en localStorage
@@ -385,6 +452,8 @@ export default function DashboardPage() {
               ¿Con amigos? Prueba la <Link href="/grupo">mezcla de grupo</Link>.
             </p>
           </header>
+
+          <PlantillasWidget onElegir={aplicarPlantilla} cargando={cargandoPlaylist} />
 
           <PlaylistBaseWidget
             key={estadoCargado ? "listo" : "cargando"}
@@ -443,7 +512,10 @@ export default function DashboardPage() {
             loading={cargandoPlaylist}
             error={errorPlaylist}
             avisos={avisos}
-            onGenerate={manejarGenerar}
+            onGenerate={() => manejarGenerar()}
+            ultimaAccion={historial[historial.length - 1]?.descripcion}
+            onDeshacer={deshacer}
+            onOrdenar={ordenarLista}
             panelAnadirAbierto={panelAnadirAbierto}
             onPanelAnadir={setPanelAnadirAbierto}
             renderAnadirMas={(cerrar) => (

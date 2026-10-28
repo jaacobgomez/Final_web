@@ -13,7 +13,7 @@ export default function TrackWidget({
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
 
-  const limiteSeleccion = 5;
+  const limiteSeleccion = 10;
 
   // Búsqueda con pequeño debounce
   useEffect(() => {

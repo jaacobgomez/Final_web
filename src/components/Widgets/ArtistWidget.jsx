@@ -13,7 +13,7 @@ export default function ArtistWidget({
   const [cargando, setCargando] = useState(false);
   const [error, setError] = useState("");
 
-  const limiteSeleccion = 5;
+  const limiteSeleccion = 10;
 
   // Buscar artistas con "debounce"
   useEffect(() => {

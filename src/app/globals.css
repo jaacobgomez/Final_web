@@ -927,3 +927,35 @@ body {
   font-weight: 700;
   vertical-align: middle;
 }
+
+/* ==== Reproductor, cambiar y vetar ==== */
+
+.track-card-contenedor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.track-card-reproductor {
+  width: 100%;
+  border: 0;
+  border-radius: 12px;
+}
+
+.track-card-boton-activo {
+  background-color: #1db954;
+  border-color: #1db954;
+  color: #000;
+}
+
+.track-card-boton:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+/* Cinco botones: en rejilla para que la tarjeta no crezca tanto */
+.track-card-acciones {
+  display: grid;
+  grid-template-columns: repeat(3, 26px);
+  gap: 0.25rem;
+}

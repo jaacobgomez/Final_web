@@ -1,4 +1,5 @@
 import { getValidAccessToken } from './auth';
+import { cargarVetados } from './vetados';
 
 // Todo lo que hay aquí usa solo endpoints que siguen vivos tras los cambios
 // de la Web API de febrero de 2026: /search (máx. 10 resultados por página),
@@ -219,7 +220,9 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     usarMiGusto = false,
     excluirIds = [],
     desplazamiento = 0,
+    vetados = cargarVetados(),
   } = opciones;
+  const idsVetados = new Set(vetados.map((a) => a.id));
 
   const { artistas = [], canciones = [], generos = [], decadas = [] } = preferencias;
   const avisos = [];
@@ -227,12 +230,12 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   // 1) Fuentes: cada una es una búsqueda que aporta canciones por turnos
   const fuentes = [];
   for (const artista of artistas) {
-    fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true });
+    fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true, artistaId: artista.id });
   }
   for (const cancion of canciones) {
     const artista = cancion.artists?.[0];
     if (artista && !artistas.some((a) => a.id === artista.id)) {
-      fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true });
+      fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true, artistaId: artista.id });
     }
   }
   for (const genero of generos) {
@@ -248,14 +251,14 @@ export async function generarPlaylist(preferencias, opciones = {}) {
       for (const track of cancionesBase) {
         const artista = track.artists?.[0];
         if (!artista) continue;
-        const actual = porArtista.get(artista.id) || { name: artista.name, veces: 0 };
+        const actual = porArtista.get(artista.id) || { id: artista.id, name: artista.name, veces: 0 };
         actual.veces += 1;
         porArtista.set(artista.id, actual);
       }
       [...porArtista.values()]
         .sort((a, b) => b.veces - a.veces)
         .slice(0, 6)
-        .forEach((a) => fuentes.push({ consulta: `artist:"${a.name}"`, elegida: true }));
+        .forEach((a) => fuentes.push({ consulta: `artist:"${a.name}"`, elegida: true, artistaId: a.id }));
     } catch (error) {
       avisos.push('No he podido leer esa playlist.');
     }
@@ -265,14 +268,22 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   if (usarMiGusto || sinSemillas) {
     try {
       const misArtistas = await obtenerMisTops('artists', 10);
-      for (const artista of barajar(misArtistas).slice(0, sinSemillas ? 5 : 3)) {
+      const disponibles = misArtistas.filter((a) => !idsVetados.has(a.id));
+      for (const artista of barajar(disponibles).slice(0, sinSemillas ? 5 : 3)) {
         // Son artistas que escuchas mucho: cuentan como elegidos para el reparto
-        fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true });
+        fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true, artistaId: artista.id });
       }
     } catch (error) {
       avisos.push('No he podido leer tus artistas más escuchados.');
     }
   }
+
+  // Los artistas vetados no se buscan
+  const permitidas = fuentes.filter((f) => !idsVetados.has(f.artistaId));
+  if (permitidas.length < fuentes.length) {
+    avisos.push('He dejado fuera a los artistas que tienes vetados.');
+  }
+  fuentes.splice(0, fuentes.length, ...permitidas);
 
   if (fuentes.length === 0) {
     return { tracks: [], avisos: ['Elige al menos un artista, canción, género o playlist.'] };
@@ -353,6 +364,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   // Devuelve 'ok', 'tope' (sobra ese artista) o 'no' (excluida o repetida)
   const intentarAnadir = (track, elegida) => {
     if (!track?.id || excluidas.has(track.id)) return 'no';
+    if (track.artists?.some((a) => idsVetados.has(a.id))) return 'no';
     const clave = claveCancion(track);
     if (clavesVistas.has(clave)) return 'no';
     const artistaId = track.artists?.[0]?.id;
@@ -545,6 +557,19 @@ export async function sincronizarPlaylistEnSpotify(playlistId, tracksApp, idsUlt
     conservadas: anadidasEnSpotify.length,
     quitadasEnSpotify: tracksApp.filter((t) => quitadas.has(t.id)).length,
   };
+}
+
+// Subir la portada (JPEG en base64, máx. 256 KB). Spotify responde 202 sin cuerpo,
+// por eso no pasa por spotifyFetch. Devuelve true si se ha podido poner.
+export async function subirPortadaPlaylist(playlistId, jpegBase64) {
+  const token = await getValidAccessToken();
+  if (!token) return false;
+  const respuesta = await fetch(`${API}/playlists/${playlistId}/images`, {
+    method: 'PUT',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'image/jpeg' },
+    body: jpegBase64,
+  });
+  return respuesta.ok;
 }
 
 // Añadir canciones al final de una playlist (máx. 100 por llamada)

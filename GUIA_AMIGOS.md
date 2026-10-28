@@ -46,3 +46,7 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - **Añadir más con los mismos filtros**: abre un panel con los filtros de la última generación; puedes quitar uno a uno, quitarlos todos (usa tus más escuchados) o usar los que tengas ahora en el panel, y elegir cuántas más.
 - **Tus playlists**: al elegir una, puedes **añadirle canciones** (se abre en la lista, las nuevas salen marcadas como NUEVA y «Actualizar» las guarda en esa misma playlist) o **crear una nueva inspirada en ella** (la tuya no se toca).
 - «Actualizar» ya no reescribe la playlist: solo añade y quita lo que cambia, así que respeta el orden, los podcasts y los archivos locales.
+- **▶ Escuchar**: abre el reproductor de Spotify dentro de la canción (con sesión de Spotify en el navegador suena entera; si no, un trozo).
+- **🔄 Cambiar**: sustituye esa canción por otra del mismo artista, respetando las décadas y el modo.
+- **🚫 Vetar**: ese artista no vuelve a salir (ni en la mezcla de grupo). Se deshace en "Artistas vetados".
+- **🎨 Portada automática**: al guardar como nueva, le pone una portada con su nombre. La primera vez hay que cerrar sesión y volver a entrar para dar el permiso.

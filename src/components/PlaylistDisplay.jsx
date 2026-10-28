@@ -25,10 +25,16 @@ export default function PlaylistDisplay({
   isFavorite,
   onToggleFavorite,
   onRemoveTrack,
+  onSwapTrack,
+  cambiandoId,
+  onBanArtist,
   nombreSugerido,
 }) {
   const [nombre, setNombre] = useState(() => nombreSugerido || nombrePorDefecto());
   const [publica, setPublica] = useState(true);
+  const [conPortada, setConPortada] = useState(true);
+  // Solo suena una canción a la vez
+  const [reproduciendoId, setReproduciendoId] = useState(null);
   const [avisoCompartir, setAvisoCompartir] = useState("");
 
   // Menú de compartir del móvil; si no existe (ordenador), WhatsApp Web
@@ -121,7 +127,7 @@ export default function PlaylistDisplay({
               <button
                 type="button"
                 className="boton-playlist secundario"
-                onClick={() => onSave(nombre.trim() || nombrePorDefecto(), publica)}
+                onClick={() => onSave(nombre.trim() || nombrePorDefecto(), publica, conPortada)}
                 disabled={loading || estadoGuardado.guardando}
               >
                 Guardar como nueva
@@ -131,7 +137,7 @@ export default function PlaylistDisplay({
             <button
               type="button"
               className="boton-playlist"
-              onClick={() => onSave(nombre.trim() || nombrePorDefecto(), publica)}
+              onClick={() => onSave(nombre.trim() || nombrePorDefecto(), publica, conPortada)}
               disabled={loading || estadoGuardado.guardando}
             >
               {estadoGuardado.guardando ? "Guardando..." : "Guardar en mi Spotify"}
@@ -144,6 +150,14 @@ export default function PlaylistDisplay({
               onChange={(e) => setPublica(e.target.checked)}
             />{" "}
             Pública (para poder compartirla con tus amigos)
+          </label>
+          <label className="popularidad-label">
+            <input
+              type="checkbox"
+              checked={conPortada}
+              onChange={(e) => setConPortada(e.target.checked)}
+            />{" "}
+            Portada automática al guardarla como nueva
           </label>
         </div>
       )}
@@ -192,6 +206,11 @@ export default function PlaylistDisplay({
               esNueva={idsGuardados !== null && !idsGuardados.has(track.id)}
               onToggleFavorito={onToggleFavorite}
               onEliminar={onRemoveTrack}
+              reproduciendo={reproduciendoId === track.id}
+              onReproducir={setReproduciendoId}
+              cambiando={cambiandoId === track.id}
+              onCambiar={onSwapTrack}
+              onVetar={onBanArtist}
             />
           ))}
         </div>

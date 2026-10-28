@@ -5,16 +5,20 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { isAuthenticated } from "@/lib/auth";
 import { cargarEstado, guardarEstado } from "@/lib/estado";
+import { cargarVetados, guardarVetados } from "@/lib/vetados";
+import { crearPortada } from "@/lib/portada";
 import {
   generarPlaylist,
   guardarPlaylistEnSpotify,
   obtenerCancionesPlaylist,
+  subirPortadaPlaylist,
   sincronizarPlaylistEnSpotify,
 } from "@/lib/spotify";
 import GenreWidget from "@/components/Widgets/GenreWidget";
 import DecadeWidget from "@/components/Widgets/DecadeWidget";
 import MezclaWidget, { ajustarObjetivo } from "@/components/Widgets/MezclaWidget";
 import AnadirMasWidget from "@/components/Widgets/AnadirMasWidget";
+import VetadosWidget from "@/components/Widgets/VetadosWidget";
 import ArtistWidget from "@/components/Widgets/ArtistWidget";
 import TrackWidget from "@/components/Widgets/TrackWidget";
 import PlaylistBaseWidget from "@/components/Widgets/PlaylistBaseWidget";
@@ -52,6 +56,8 @@ export default function DashboardPage() {
   const [ultimosParametros, setUltimosParametros] = useState(null);
   const [panelAnadirAbierto, setPanelAnadirAbierto] = useState(false);
   const [abriendoPlaylist, setAbriendoPlaylist] = useState(false);
+  const [vetados, setVetados] = useState([]);
+  const [cambiandoId, setCambiandoId] = useState(null);
 
   const idsActuales = listaReproduccion.map((t) => t.id).join(",");
   const hayCambiosSinGuardar = guardada !== null && guardada.ids !== idsActuales;
@@ -87,6 +93,7 @@ export default function DashboardPage() {
       if (estado.nombreSugerido) setNombreSugerido(estado.nombreSugerido);
       if (estado.ultimosParametros) setUltimosParametros(estado.ultimosParametros);
     }
+    setVetados(cargarVetados());
     setEstadoCargado(true);
   }, []);
 
@@ -216,12 +223,27 @@ export default function DashboardPage() {
   }
 
   // Crear la playlist de verdad en la cuenta de Spotify del usuario
-  async function manejarGuardar(nombre, publica = true) {
+  async function manejarGuardar(nombre, publica = true, conPortada = true) {
     setEstadoGuardado({ guardando: true, mensaje: "", error: "" });
     try {
       const { id, url } = await guardarPlaylistEnSpotify(nombre, listaReproduccion, publica);
       setGuardada({ id, url, nombre, ids: idsActuales, publica });
-      setEstadoGuardado({ guardando: false, mensaje: "✅ Guardada en tu Spotify.", error: "" });
+
+      // La portada es un extra: si falla, la playlist ya está guardada igualmente
+      let aviso = "";
+      if (conPortada) {
+        try {
+          const portada = crearPortada(nombre);
+          const puesta = portada && (await subirPortadaPlaylist(id, portada));
+          if (!puesta) {
+            aviso = " No he podido ponerle portada: cierra sesión y vuelve a entrar para dar el permiso nuevo.";
+          }
+        } catch (error) {
+          console.error("Portada", error);
+          aviso = " No he podido ponerle portada.";
+        }
+      }
+      setEstadoGuardado({ guardando: false, mensaje: `✅ Guardada en tu Spotify.${aviso}`, error: "" });
     } catch (error) {
       console.error(error);
       setEstadoGuardado({
@@ -269,6 +291,62 @@ export default function DashboardPage() {
   }
 
   // Eliminar una canción de la playlist
+  // Cambiar una canción por otra del mismo artista (con las décadas y el modo de la última vez)
+  async function cambiarCancion(track) {
+    const artista = track.artists?.[0];
+    if (!artista) return;
+    setCambiandoId(track.id);
+    setErrorPlaylist("");
+    try {
+      const parametros = ultimosParametros || { preferencias, opcionesMezcla };
+      const intentar = (decadas) =>
+        generarPlaylist(
+          { artistas: [artista], canciones: [], generos: [], decadas, playlistBase: null },
+          {
+            modo: parametros.opcionesMezcla.modo,
+            objetivo: { tipo: "canciones", valor: 1 },
+            excluirIds: listaReproduccion.map((t) => t.id),
+          }
+        );
+      let { tracks } = await intentar(parametros.preferencias.decadas || []);
+      // Si con esas décadas no queda ninguna, se prueba sin ellas
+      if (tracks.length === 0 && parametros.preferencias.decadas?.length) {
+        ({ tracks } = await intentar([]));
+      }
+      if (tracks.length === 0) {
+        setAvisos([`No quedan más canciones de ${artista.name} para cambiarla.`]);
+        return;
+      }
+      setListaReproduccion((prev) => prev.map((t) => (t.id === track.id ? tracks[0] : t)));
+      setAvisos([`🔄 «${track.name}» → «${tracks[0].name}».`]);
+    } catch (error) {
+      console.error(error);
+      setErrorPlaylist(error.message || "No se pudo cambiar la canción.");
+    } finally {
+      setCambiandoId(null);
+    }
+  }
+
+  // Vetar un artista: no vuelve a salir y se quitan sus canciones de la lista
+  function vetarArtista(artista) {
+    const suyas = listaReproduccion.filter((t) => t.artists?.some((a) => a.id === artista.id));
+    const confirmado = window.confirm(
+      `¿No quieres más canciones de ${artista.name}? Se quitarán sus ${suyas.length} de esta lista y no volverá a salir (puedes deshacerlo en "Artistas vetados").`
+    );
+    if (!confirmado) return;
+    const nuevos = [...vetados.filter((a) => a.id !== artista.id), { id: artista.id, name: artista.name }];
+    setVetados(nuevos);
+    guardarVetados(nuevos);
+    setListaReproduccion((prev) => prev.filter((t) => !t.artists?.some((a) => a.id === artista.id)));
+    setAvisos([`🚫 ${artista.name} vetado.`]);
+  }
+
+  function quitarVeto(idArtista) {
+    const nuevos = vetados.filter((a) => a.id !== idArtista);
+    setVetados(nuevos);
+    guardarVetados(nuevos);
+  }
+
   function eliminarTrackDePlaylist(idTrack) {
     setListaReproduccion((prev) => prev.filter((t) => t.id !== idTrack));
   }
@@ -348,6 +426,7 @@ export default function DashboardPage() {
             }
           />
 
+          <VetadosWidget vetados={vetados} onQuitar={quitarVeto} />
         </div>
 
         <div className="dashboard-columna-derecha">
@@ -388,6 +467,9 @@ export default function DashboardPage() {
             isFavorite={esFavorito}
             onToggleFavorite={toggleFavorito}
             onRemoveTrack={eliminarTrackDePlaylist}
+            onSwapTrack={cambiarCancion}
+            cambiandoId={cambiandoId}
+            onBanArtist={vetarArtista}
           />
 
           <div className="card bloque-favoritos">

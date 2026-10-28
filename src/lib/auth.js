@@ -65,7 +65,8 @@ export async function getSpotifyAuthUrl() {
     'user-top-read',          // tus artistas y canciones más escuchados
     'user-library-read',      // tus canciones guardadas (modo "Descubrir")
     'playlist-modify-public',
-    'playlist-modify-private'
+    'playlist-modify-private',
+    'ugc-image-upload'        // portada automática de las playlists
   ].join(' ');
 
   const params = new URLSearchParams({
@@ -220,5 +221,6 @@ export function logout() {
   localStorage.removeItem('spotify_token_expiration');
   // La lista y la playlist vinculada son de esta cuenta: no deben verse con otra
   localStorage.removeItem('taste_mixer_estado');
+  localStorage.removeItem('taste_mixer_vetados');
   avisarCambioSesion();
 }

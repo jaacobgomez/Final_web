@@ -19,6 +19,9 @@ const OBJETIVOS = [
 
 export default function MezclaWidget({ opciones, onCambiarOpciones }) {
   const modoActual = MODOS.find((m) => m.clave === opciones.modo);
+  const esPredefinido = OBJETIVOS.some(
+    (o) => o.tipo === opciones.objetivo.tipo && o.valor === opciones.objetivo.valor
+  );
 
   return (
     <div className="card widget-popularidad">
@@ -64,6 +67,12 @@ export default function MezclaWidget({ opciones, onCambiarOpciones }) {
         })}
       </div>
 
+      <CantidadPersonalizada
+        objetivo={opciones.objetivo}
+        resaltar={!esPredefinido}
+        onCambiar={(objetivo) => onCambiarOpciones({ ...opciones, objetivo })}
+      />
+
       <label className="popularidad-label">
         <input
           type="checkbox"
@@ -74,6 +83,47 @@ export default function MezclaWidget({ opciones, onCambiarOpciones }) {
         />{" "}
         Añadir también mis artistas más escuchados
       </label>
+    </div>
+  );
+}
+
+// Límites razonables para no pedirle a Spotify cientos de búsquedas
+export const LIMITES_OBJETIVO = {
+  canciones: { min: 1, max: 200 },
+  minutos: { min: 5, max: 600 },
+};
+
+export function ajustarObjetivo(tipo, valor) {
+  const { min, max } = LIMITES_OBJETIVO[tipo];
+  const numero = Math.round(Number(valor));
+  return { tipo, valor: Number.isNaN(numero) ? min : Math.min(max, Math.max(min, numero)) };
+}
+
+// Número libre + unidad (canciones o minutos)
+export function CantidadPersonalizada({ objetivo, onCambiar, resaltar = false, etiqueta = "Otra:" }) {
+  return (
+    <div className={`cantidad-personalizada ${resaltar ? "cantidad-personalizada-activa" : ""}`}>
+      <span className="popularidad-label">{etiqueta}</span>
+      <input
+        type="number"
+        inputMode="numeric"
+        className="widget-input cantidad-input"
+        min={LIMITES_OBJETIVO[objetivo.tipo].min}
+        max={LIMITES_OBJETIVO[objetivo.tipo].max}
+        value={objetivo.valor}
+        onChange={(e) => onCambiar({ tipo: objetivo.tipo, valor: e.target.value })}
+        onBlur={(e) => onCambiar(ajustarObjetivo(objetivo.tipo, e.target.value))}
+        aria-label="Cantidad"
+      />
+      <select
+        className="widget-input cantidad-unidad"
+        value={objetivo.tipo}
+        onChange={(e) => onCambiar(ajustarObjetivo(e.target.value, objetivo.valor))}
+        aria-label="Unidad"
+      >
+        <option value="canciones">canciones</option>
+        <option value="minutos">minutos</option>
+      </select>
     </div>
   );
 }

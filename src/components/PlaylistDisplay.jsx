@@ -14,7 +14,7 @@ export default function PlaylistDisplay({
   error,
   avisos = [],
   onGenerate,
-  onAddMore,
+  renderAnadirMas,
   onSave,
   onUpdate,
   guardada,
@@ -28,6 +28,7 @@ export default function PlaylistDisplay({
   const [nombre, setNombre] = useState(() => nombreSugerido || nombrePorDefecto());
   const [publica, setPublica] = useState(true);
   const [avisoCompartir, setAvisoCompartir] = useState("");
+  const [panelAnadir, setPanelAnadir] = useState(false);
 
   // Menú de compartir del móvil; si no existe (ordenador), WhatsApp Web
   const compartir = async () => {
@@ -76,12 +77,14 @@ export default function PlaylistDisplay({
         <button
           type="button"
           className="boton-playlist secundario"
-          onClick={onAddMore}
+          onClick={() => setPanelAnadir((abierto) => !abierto)}
           disabled={loading || tracks.length === 0}
         >
           Añadir más canciones
         </button>
       </div>
+
+      {panelAnadir && tracks.length > 0 && renderAnadirMas(() => setPanelAnadir(false))}
 
       {error && <p className="texto-error-busqueda">{error}</p>}
       {avisos.map((aviso) => (

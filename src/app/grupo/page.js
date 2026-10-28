@@ -107,13 +107,18 @@ function Grupo() {
         return;
       }
 
-      const { tracks, avisos, comunes } = await generarMezclaGrupo(todos);
+      const { tracks, avisos, comunes, artistas } = await generarMezclaGrupo(todos);
       const nombres = todos.map((p) => p.nombre).join(', ');
 
       // Se abre en el panel con todo lo de siempre: guardar, actualizar, compartir…
       actualizarEstado({
         listaReproduccion: tracks,
         guardada: null,
+        // "Añadir más" en el panel seguirá con los artistas del grupo
+        ultimosParametros: {
+          preferencias: { artistas, canciones: [], generos: [], decadas: [], playlistBase: null },
+          opcionesMezcla: { modo: 'equilibrado', objetivo: { tipo: 'canciones', valor: 30 }, usarMiGusto: false },
+        },
         nombreSugerido: `Mezcla · ${nombres}`.slice(0, 90),
         avisos: [
           `👥 Mezcla de grupo: ${nombres}.`,

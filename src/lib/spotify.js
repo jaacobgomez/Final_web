@@ -165,6 +165,23 @@ function claveCancion(track) {
   return `${titulo}|${track.artists?.[0]?.id || ''}`;
 }
 
+// Páginas para pedir después de las iniciales: primero hacia delante y, al final,
+// las anteriores (en Descubrir son las más conocidas)
+const MAX_OFFSET = 200;
+const MAX_PETICIONES_EXTRA = 60;
+
+function paginasSiguientes(iniciales) {
+  const desde = Math.min(...iniciales);
+  const resto = [];
+  for (let o = 0; o <= MAX_OFFSET; o += LIMITE_BUSQUEDA) {
+    if (!iniciales.includes(o)) resto.push(o);
+  }
+  return [
+    ...resto.filter((o) => o > desde),
+    ...resto.filter((o) => o < desde).reverse(),
+  ];
+}
+
 function barajar(lista) {
   const copia = [...lista];
   for (let i = copia.length - 1; i > 0; i--) {
@@ -283,25 +300,39 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     }
   }
 
-  // 3) Búsquedas: fuente × década × página, con los filtros dentro de la consulta
+  // 3) Colas de búsqueda: una por fuente × década, cada una con sus páginas pendientes
   const anios = decadas.map(filtroAnios).filter(Boolean);
-  const offsets = OFFSETS_POR_MODO[modo].map((o) => o + desplazamiento * 10);
-  const tareas = [];
-  fuentes.forEach((fuente) => {
-    fuente.tracks = [];
-    const filtros = anios.length > 0 ? anios.map((a) => ` year:${a}`) : [''];
+  const filtros = anios.length > 0 ? anios.map((a) => ` year:${a}`) : [''];
+  const iniciales = OFFSETS_POR_MODO[modo].map((o) => o + desplazamiento * 10);
+  const colas = [];
+  for (const fuente of fuentes) {
     for (const filtro of filtros) {
-      for (const offset of offsets) {
-        tareas.push(async () => {
-          const encontrados = await buscarTracks(`${fuente.consulta}${filtro}`, offset);
-          fuente.tracks.push(...encontrados);
-        });
-      }
+      colas.push({
+        consulta: `${fuente.consulta}${filtro}`,
+        elegida: fuente.elegida,
+        tracks: [],
+        pendientes: paginasSiguientes(iniciales),
+      });
     }
-  });
-  await enLotes(tareas);
+  }
 
-  // 4) Mezcla por turnos entre fuentes, sin repetir canción ni pasarse por artista
+  const pedirPagina = async (cola, offset) => {
+    const encontrados = await buscarTracks(cola.consulta, offset);
+    // Página incompleta: más allá ya no hay resultados
+    if (encontrados.length < LIMITE_BUSQUEDA) {
+      cola.pendientes = cola.pendientes.filter((o) => o < offset);
+    }
+    return encontrados;
+  };
+
+  await enLotes(
+    colas.map((cola) => async () => {
+      const paginas = await Promise.all(iniciales.map((o) => pedirPagina(cola, o)));
+      cola.tracks = barajar(paginas.flat());
+    })
+  );
+
+  // 4) Mezcla por turnos entre colas, sin repetir canción ni pasarse por artista
   const objetivoCanciones =
     objetivo.tipo === 'canciones' ? objetivo.valor : Math.ceil(objetivo.valor / 3);
   const maxPorArtistaElegido = Math.max(3, Math.ceil(objetivoCanciones / fuentes.length));
@@ -310,6 +341,8 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   const resultado = [];
   const clavesVistas = new Set();
   const porArtista = new Map();
+  const descartadasPorTope = [];
+  let sinTope = false;
   let minutos = 0;
 
   const yaLleno = () =>
@@ -317,21 +350,39 @@ export async function generarPlaylist(preferencias, opciones = {}) {
       ? resultado.length >= objetivo.valor
       : minutos >= objetivo.valor;
 
+  // Devuelve 'ok', 'tope' (sobra ese artista) o 'no' (excluida o repetida)
   const intentarAnadir = (track, elegida) => {
-    if (!track?.id || excluidas.has(track.id)) return false;
+    if (!track?.id || excluidas.has(track.id)) return 'no';
     const clave = claveCancion(track);
-    if (clavesVistas.has(clave)) return false;
+    if (clavesVistas.has(clave)) return 'no';
     const artistaId = track.artists?.[0]?.id;
     const cuenta = porArtista.get(artistaId) || 0;
-    const tope = elegida ? maxPorArtistaElegido : maxPorArtistaOtro;
-    if (cuenta >= tope) return false;
+    const tope = sinTope ? Infinity : elegida ? maxPorArtistaElegido : maxPorArtistaOtro;
+    if (cuenta >= tope) return 'tope';
 
     clavesVistas.add(clave);
     excluidas.add(track.id);
     porArtista.set(artistaId, cuenta + 1);
     resultado.push(track);
     minutos += (track.duration_ms || 0) / 60000;
-    return true;
+    return 'ok';
+  };
+
+  const mezclar = () => {
+    let quedan = true;
+    while (!yaLleno() && quedan) {
+      quedan = false;
+      for (const cola of colas) {
+        if (yaLleno()) break;
+        while (cola.tracks.length > 0) {
+          quedan = true;
+          const track = cola.tracks.shift();
+          const estado = intentarAnadir(track, cola.elegida);
+          if (estado === 'ok') break;
+          if (estado === 'tope') descartadasPorTope.push(track);
+        }
+      }
+    }
   };
 
   // Las canciones elegidas a mano van siempre (si no se están excluyendo)
@@ -339,17 +390,29 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     if (yaLleno()) break;
     intentarAnadir(cancion, true);
   }
+  mezclar();
 
-  const colas = fuentes.map((f) => ({ elegida: f.elegida, tracks: barajar(f.tracks) }));
-  let quedan = true;
-  while (!yaLleno() && quedan) {
-    quedan = false;
-    for (const cola of colas) {
+  // Si faltan canciones, se piden más páginas hasta llegar al número exacto
+  let peticionesExtra = 0;
+  while (!yaLleno() && peticionesExtra < MAX_PETICIONES_EXTRA) {
+    const abiertas = colas.filter((c) => c.pendientes.length > 0);
+    if (abiertas.length === 0) break;
+    peticionesExtra += abiertas.length;
+    await enLotes(
+      abiertas.map((cola) => async () => {
+        const encontrados = await pedirPagina(cola, cola.pendientes.shift());
+        cola.tracks.push(...barajar(encontrados));
+      })
+    );
+    mezclar();
+  }
+
+  // Último recurso: repetir más a un mismo artista antes que quedarse corto
+  if (!yaLleno()) {
+    sinTope = true;
+    for (const track of descartadasPorTope) {
       if (yaLleno()) break;
-      while (cola.tracks.length > 0) {
-        quedan = true;
-        if (intentarAnadir(cola.tracks.shift(), cola.elegida)) break;
-      }
+      intentarAnadir(track, true);
     }
   }
 
@@ -402,7 +465,7 @@ export async function generarMezclaGrupo(participantes, opciones = {}) {
     { modo: 'equilibrado', objetivo: { tipo: 'canciones', valor: 30 }, ...opciones }
   );
 
-  return { tracks, avisos, comunes: comunes.map((a) => a.name) };
+  return { tracks, avisos, comunes: comunes.map((a) => a.name), artistas: elegidos };
 }
 
 // ---------- Guardar en Spotify ----------

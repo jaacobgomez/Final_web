@@ -12,7 +12,8 @@ import {
 } from "@/lib/spotify";
 import GenreWidget from "@/components/Widgets/GenreWidget";
 import DecadeWidget from "@/components/Widgets/DecadeWidget";
-import MezclaWidget from "@/components/Widgets/MezclaWidget";
+import MezclaWidget, { ajustarObjetivo } from "@/components/Widgets/MezclaWidget";
+import AnadirMasWidget from "@/components/Widgets/AnadirMasWidget";
 import ArtistWidget from "@/components/Widgets/ArtistWidget";
 import TrackWidget from "@/components/Widgets/TrackWidget";
 import PlaylistBaseWidget from "@/components/Widgets/PlaylistBaseWidget";
@@ -46,6 +47,8 @@ export default function DashboardPage() {
   const [guardada, setGuardada] = useState(null);
   const [nombreSugerido, setNombreSugerido] = useState("");
   const [estadoCargado, setEstadoCargado] = useState(false);
+  // Filtros con los que se generó la lista: "Añadir más" los reutiliza
+  const [ultimosParametros, setUltimosParametros] = useState(null);
 
   const idsActuales = listaReproduccion.map((t) => t.id).join(",");
   const hayCambiosSinGuardar = guardada !== null && guardada.ids !== idsActuales;
@@ -79,6 +82,7 @@ export default function DashboardPage() {
       if (estado.guardada) setGuardada(estado.guardada);
       if (Array.isArray(estado.avisos)) setAvisos(estado.avisos);
       if (estado.nombreSugerido) setNombreSugerido(estado.nombreSugerido);
+      if (estado.ultimosParametros) setUltimosParametros(estado.ultimosParametros);
     }
     setEstadoCargado(true);
   }, []);
@@ -93,8 +97,9 @@ export default function DashboardPage() {
       guardada,
       avisos,
       nombreSugerido,
+      ultimosParametros,
     });
-  }, [estadoCargado, preferencias, opcionesMezcla, listaReproduccion, guardada, avisos, nombreSugerido]);
+  }, [estadoCargado, preferencias, opcionesMezcla, listaReproduccion, guardada, avisos, nombreSugerido, ultimosParametros]);
 
   // Generar playlist usando las preferencias
   async function manejarGenerar() {
@@ -104,10 +109,16 @@ export default function DashboardPage() {
     setEstadoGuardado({ guardando: false, mensaje: "", error: "" });
 
     try {
-      const { tracks, avisos } = await generarPlaylist(preferencias, opcionesMezcla);
+      const opciones = {
+        ...opcionesMezcla,
+        objetivo: ajustarObjetivo(opcionesMezcla.objetivo.tipo, opcionesMezcla.objetivo.valor),
+      };
+      setOpcionesMezcla(opciones);
+      const { tracks, avisos } = await generarPlaylist(preferencias, opciones);
       setListaReproduccion(tracks);
       setAvisos(avisos);
       setVecesAnadidas(0);
+      setUltimosParametros({ preferencias, opcionesMezcla: opciones });
     } catch (error) {
       console.error(error);
       setErrorPlaylist(
@@ -119,29 +130,27 @@ export default function DashboardPage() {
     }
   }
 
-  // Añadir más canciones sobre la playlist actual (sin repetir)
-  async function agregarMasCanciones() {
-    if (listaReproduccion.length === 0) {
-      await manejarGenerar();
-      return;
-    }
-
+  // Añadir más canciones sobre la playlist actual (sin repetir), con los filtros elegidos
+  async function agregarMasCanciones(parametros, objetivo) {
     setCargandoPlaylist(true);
     setErrorPlaylist("");
 
     try {
       const siguiente = vecesAnadidas + 1;
-      const { tracks } = await generarPlaylist(preferencias, {
-        ...opcionesMezcla,
-        objetivo: { tipo: "canciones", valor: 10 },
+      const { tracks, avisos } = await generarPlaylist(parametros.preferencias, {
+        ...parametros.opcionesMezcla,
+        objetivo,
         excluirIds: listaReproduccion.map((t) => t.id),
         desplazamiento: siguiente,
       });
       setListaReproduccion((prev) => [...prev, ...tracks]);
       setVecesAnadidas(siguiente);
-      if (tracks.length === 0) {
-        setAvisos(["No quedan más canciones nuevas con estos filtros."]);
-      }
+      setUltimosParametros(parametros);
+      setAvisos(
+        tracks.length === 0
+          ? ["No quedan más canciones nuevas con estos filtros."]
+          : [`➕ Añadidas ${tracks.length} canciones.`, ...avisos]
+      );
     } catch (error) {
       console.error(error);
       setErrorPlaylist(error.message || "Error al añadir más canciones.");
@@ -297,7 +306,19 @@ export default function DashboardPage() {
             error={errorPlaylist}
             avisos={avisos}
             onGenerate={manejarGenerar}
-            onAddMore={agregarMasCanciones}
+            renderAnadirMas={(cerrar) => (
+              <AnadirMasWidget
+                key={JSON.stringify(ultimosParametros)}
+                parametros={ultimosParametros || { preferencias, opcionesMezcla }}
+                parametrosPanel={{ preferencias, opcionesMezcla }}
+                loading={cargandoPlaylist}
+                onCerrar={cerrar}
+                onAnadir={async (parametros, objetivo) => {
+                  await agregarMasCanciones(parametros, objetivo);
+                  cerrar();
+                }}
+              />
+            )}
             onSave={manejarGuardar}
             onUpdate={manejarActualizar}
             guardada={guardada}

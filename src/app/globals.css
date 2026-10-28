@@ -861,3 +861,57 @@ body {
   gap: 0.25rem;
   font-size: 0.8rem;
 }
+
+/* ==== Cantidad libre y panel de "Añadir más" ==== */
+
+.cantidad-personalizada {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.cantidad-input {
+  width: 5rem;
+}
+
+.cantidad-unidad {
+  width: auto;
+}
+
+.cantidad-personalizada-activa .cantidad-input {
+  border-color: #1db954;
+}
+
+.panel-anadir {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+.chip-filtro {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.75rem;
+  padding: 0.2rem 0.3rem 0.2rem 0.6rem;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.chip-filtro button {
+  border: none;
+  background: none;
+  color: var(--foreground-muted);
+  cursor: pointer;
+  font-size: 0.8rem;
+  line-height: 1;
+}
+
+.chip-filtro button:hover {
+  color: #ff6b6b;
+}

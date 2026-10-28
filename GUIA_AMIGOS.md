@@ -39,3 +39,8 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - **Partir de una playlist tuya:** en el panel, "Partir de una playlist tuya" → genera más en su línea sin repetir lo que ya tiene.
 - **Compartir:** tras guardar, botón 📤 (menú del móvil o WhatsApp). Marca "Pública" al guardar para que tus amigos puedan abrirla.
 - **Mezcla de grupo** (`/grupo`): cada amigo pulsa "Compartir mi gusto" y te manda el enlace; tú los abres, pulsas "Generar mezcla de grupo" y la guardas en tu Spotify. Primero salen los artistas en común.
+
+## 7. Novedades (28-10-2026)
+- **Número exacto**: si pides 50 canciones salen 50 (la app pide más páginas a Spotify hasta completarlo). Solo se queda corta si no existen tantas con esos filtros, y te avisa.
+- **Cantidad libre**: además de los botones, en "Otra:" eliges cualquier número de canciones (1-200) o de minutos (5-600).
+- **Añadir más con los mismos filtros**: abre un panel con los filtros de la última generación; puedes quitar uno a uno, quitarlos todos (usa tus más escuchados) o usar los que tengas ahora en el panel, y elegir cuántas más.

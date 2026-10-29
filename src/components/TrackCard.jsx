@@ -16,6 +16,9 @@ export default function TrackCard({
   cambiando = false,
   onCambiar,
   onVetar,
+  seleccionando = false,
+  seleccionada = false,
+  onSeleccionar,
 }) {
   const [menuAbierto, setMenuAbierto] = useState(false);
 
@@ -40,7 +43,18 @@ export default function TrackCard({
 
   return (
     <div className="track-card-contenedor">
-      <div className={`track-card ${reproduciendo ? "track-card-sonando" : ""}`}>
+      <div
+        className={`track-card ${reproduciendo ? "track-card-sonando" : ""} ${seleccionada ? "track-card-seleccionada" : ""}`}
+      >
+        {seleccionando && (
+          <input
+            type="checkbox"
+            className="track-card-check"
+            checked={seleccionada}
+            onChange={() => onSeleccionar(track.id)}
+            aria-label={`Seleccionar ${track.name}`}
+          />
+        )}
         <button
           type="button"
           className="track-card-portada"
@@ -76,7 +90,7 @@ export default function TrackCard({
           {cambiando ? "…" : `${minutos}:${segundos}`}
         </span>
 
-        <div className="track-card-menu">
+        {!seleccionando && <div className="track-card-menu">
           <button
             type="button"
             className="track-card-mas"
@@ -135,7 +149,7 @@ export default function TrackCard({
               </ul>
             </>
           )}
-        </div>
+        </div>}
       </div>
 
       {/* Reproductor oficial de Spotify: con sesión en el navegador suena entera; si no, un fragmento */}

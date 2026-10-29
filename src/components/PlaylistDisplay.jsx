@@ -25,7 +25,9 @@ export default function PlaylistDisplay({
   isFavorite,
   onToggleFavorite,
   onRemoveTrack,
+  onRemoveTracks,
   onSwapTrack,
+  onSwapTracks,
   cambiandoId,
   onBanArtist,
   ultimaAccion,
@@ -39,6 +41,21 @@ export default function PlaylistDisplay({
   // Solo suena una canción a la vez
   const [reproduciendoId, setReproduciendoId] = useState(null);
   const [avisoCompartir, setAvisoCompartir] = useState("");
+  // Selección múltiple: null = desactivada; si no, ids marcados
+  const [seleccion, setSeleccion] = useState(null);
+
+  const alternarSeleccion = (id) =>
+    setSeleccion((s) => (s.includes(id) ? s.filter((x) => x !== id) : [...s, id]));
+  // Marca (o desmarca, si ya estaban todas) las canciones de un artista
+  const seleccionarArtista = (idArtista) => {
+    const suyas = tracks.filter((t) => t.artists?.some((a) => a.id === idArtista)).map((t) => t.id);
+    setSeleccion((s) =>
+      suyas.every((id) => s.includes(id)) ? s.filter((id) => !suyas.includes(id)) : [...new Set([...s, ...suyas])]
+    );
+  };
+  const artistasEnLista = [
+    ...new Map(tracks.flatMap((t) => t.artists || []).map((a) => [a.id, a])).values(),
+  ].sort((a, b) => a.name.localeCompare(b.name));
 
   // Menú de compartir del móvil; si no existe (ordenador), WhatsApp Web
   const compartir = async () => {
@@ -209,7 +226,12 @@ export default function PlaylistDisplay({
           ) : (
             <span />
           )}
-          {tracks.length > 1 && (
+          {!seleccion && (
+            <button type="button" className="boton-info-decadas" onClick={() => setSeleccion([])} disabled={loading}>
+              ☑️ Seleccionar
+            </button>
+          )}
+          {tracks.length > 1 && !seleccion && (
             <select
               className="widget-input barra-lista-ordenar"
               value=""
@@ -223,6 +245,55 @@ export default function PlaylistDisplay({
               <option value="alternar">🎤 Alternar artistas</option>
             </select>
           )}
+        </div>
+      )}
+
+      {seleccion && tracks.length > 0 && (
+        <div className="barra-seleccion">
+          <span className="texto-estado-busqueda">{seleccion.length} seleccionadas</span>
+          <button
+            type="button"
+            className="boton-info-decadas"
+            onClick={() => setSeleccion(seleccion.length === tracks.length ? [] : tracks.map((t) => t.id))}
+          >
+            {seleccion.length === tracks.length ? "Ninguna" : "Todas"}
+          </button>
+          <select
+            className="widget-input barra-lista-ordenar"
+            value=""
+            onChange={(e) => e.target.value && seleccionarArtista(e.target.value)}
+            aria-label="Seleccionar las de un artista"
+          >
+            <option value="">🎤 Las de…</option>
+            {artistasEnLista.map((a) => (
+              <option key={a.id} value={a.id}>{a.name}</option>
+            ))}
+          </select>
+          <button
+            type="button"
+            className="boton-info-decadas"
+            disabled={loading || seleccion.length === 0}
+            onClick={() => {
+              onSwapTracks(seleccion);
+              setSeleccion(null);
+            }}
+          >
+            🔄 Cambiar
+          </button>
+          <button
+            type="button"
+            className="boton-info-decadas opcion-peligro"
+            disabled={loading || seleccion.length === 0}
+            onClick={() => {
+              onRemoveTracks(seleccion);
+              setSeleccion(null);
+            }}
+          >
+            ✕ Quitar
+          </button>
+          <button type="button" className="boton-info-decadas" onClick={() => setSeleccion(null)}>
+            Cancelar
+          </button>
         </div>
       )}
 
@@ -241,6 +312,9 @@ export default function PlaylistDisplay({
               cambiando={cambiandoId === track.id}
               onCambiar={onSwapTrack}
               onVetar={onBanArtist}
+              seleccionando={Boolean(seleccion)}
+              seleccionada={Boolean(seleccion?.includes(track.id))}
+              onSeleccionar={alternarSeleccion}
             />
           ))}
         </div>

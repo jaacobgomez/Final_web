@@ -1139,6 +1139,41 @@ body {
   width: auto;
 }
 
+.barra-lista > :first-child {
+  margin-right: auto;
+}
+
+/* Selección múltiple de canciones */
+.barra-seleccion {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  padding: 0.5rem;
+  border-radius: 0.75rem;
+  background-color: #181818;
+}
+
+.barra-seleccion .opcion-peligro {
+  color: #f87171;
+}
+
+.track-card-check {
+  width: 1.2rem;
+  height: 1.2rem;
+  flex-shrink: 0;
+  accent-color: #1db954;
+  cursor: pointer;
+}
+
+.track-card-seleccionada {
+  outline: 2px solid #1db954;
+}
+
 /* ==== Fiesta con votos ==== */
 
 .fiesta-tarjeta {

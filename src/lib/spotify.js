@@ -233,20 +233,36 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     desplazamiento = 0,
     vetados = cargarVetados(),
     sinExplicitas = false,
+    soloElegidos = false,
   } = opciones;
   const idsVetados = new Set(vetados.map((a) => a.id));
 
   const { artistas = [], canciones = [], generos = [], decadas = [] } = preferencias;
   const avisos = [];
 
+  // "Solo los artistas elegidos": cada canción tiene que llevar a alguno de ellos.
+  // Si no hay artistas, cuentan los de las canciones elegidas.
+  const idsElegidos = new Set(
+    artistas.length > 0
+      ? artistas.map((a) => a.id)
+      : canciones.flatMap((c) => (c.artists || []).map((a) => a.id))
+  );
+  const estricto = soloElegidos && idsElegidos.size > 0;
+  const idsAMano = new Set(canciones.map((c) => c.id));
+
   // 1) Fuentes: cada una es una búsqueda que aporta canciones por turnos
   const fuentes = [];
   for (const artista of artistas) {
     fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true, artistaId: artista.id });
   }
+  // Una canción aporta su artista como semilla. Si es una colaboración con alguno de
+  // los artistas elegidos, ya está cubierta: así «Fernandocosta, El Greca» no mete a
+  // Fernandocosta en una lista de El Greca. En modo estricto nunca añade artistas nuevos.
   for (const cancion of canciones) {
-    const artista = cancion.artists?.[0];
-    if (artista && !artistas.some((a) => a.id === artista.id)) {
+    const suyos = cancion.artists || [];
+    if (suyos.some((a) => artistas.some((elegido) => elegido.id === a.id))) continue;
+    const artista = suyos[0];
+    if (artista && (!estricto || idsElegidos.has(artista.id))) {
       fuentes.push({ consulta: `artist:"${artista.name}"`, elegida: true, artistaId: artista.id });
     }
   }
@@ -270,6 +286,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
       [...porArtista.values()]
         .sort((a, b) => b.veces - a.veces)
         .slice(0, 6)
+        .filter((a) => !estricto || idsElegidos.has(a.id))
         .forEach((a) => fuentes.push({ consulta: `artist:"${a.name}"`, elegida: true, artistaId: a.id }));
     } catch (error) {
       avisos.push('No he podido leer esa playlist.');
@@ -277,7 +294,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   }
 
   const sinSemillas = fuentes.length === 0;
-  if (usarMiGusto || sinSemillas) {
+  if ((usarMiGusto && !estricto) || sinSemillas) {
     try {
       const misArtistas = await obtenerMisTops('artists', 10);
       const disponibles = misArtistas.filter((a) => !idsVetados.has(a.id));
@@ -333,6 +350,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
       colas.push({
         consulta: `${fuente.consulta}${filtro}`,
         elegida: fuente.elegida,
+        artistaId: fuente.artistaId,
         tracks: [],
         pendientes: paginasSiguientes(iniciales),
       });
@@ -345,7 +363,10 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     if (encontrados.length < LIMITE_BUSQUEDA) {
       cola.pendientes = cola.pendientes.filter((o) => o < offset);
     }
-    return encontrados;
+    // La búsqueda por artista es aproximada: fuera los de nombre parecido
+    return cola.artistaId
+      ? encontrados.filter((t) => t.artists?.some((a) => a.id === cola.artistaId))
+      : encontrados;
   };
 
   await enLotes(
@@ -378,6 +399,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     if (!track?.id || excluidas.has(track.id)) return 'no';
     if (track.artists?.some((a) => idsVetados.has(a.id))) return 'no';
     if (sinExplicitas && track.explicit) return 'no';
+    if (estricto && !idsAMano.has(track.id) && !track.artists?.some((a) => idsElegidos.has(a.id))) return 'no';
     const clave = claveCancion(track);
     if (clavesVistas.has(clave)) return 'no';
     const artistaId = track.artists?.[0]?.id;

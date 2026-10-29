@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { CantidadPersonalizada, ajustarObjetivo } from "./MezclaWidget";
 
-// Panel de "Añadir más canciones": reutiliza los filtros de la última generación,
-// deja quitar los que sobren (o todos) y elegir cuántas canciones más.
+// Panel de "Añadir más canciones": usa los mismos filtros que los widgets del panel.
+// Quitar un filtro aquí lo quita también de su widget (y al revés), así no se desincronizan.
 
 const NOMBRES_MODO = { conocidas: "Conocidas", equilibrado: "Equilibrado", descubrir: "Descubrir" };
 
@@ -21,50 +21,45 @@ function hayFiltros(preferencias, opcionesMezcla) {
   );
 }
 
-function mismosFiltros(a, b) {
-  return (
-    JSON.stringify(a.preferencias) === JSON.stringify(b.preferencias) &&
-    a.opcionesMezcla.modo === b.opcionesMezcla.modo &&
-    Boolean(a.opcionesMezcla.usarMiGusto) === Boolean(b.opcionesMezcla.usarMiGusto) &&
-    Boolean(a.opcionesMezcla.sinExplicitas) === Boolean(b.opcionesMezcla.sinExplicitas)
-  );
-}
-
-export default function AnadirMasWidget({ parametros, parametrosPanel, loading, onAnadir, onCerrar }) {
-  const [filtros, setFiltros] = useState(parametros);
+export default function AnadirMasWidget({
+  preferencias,
+  opcionesMezcla,
+  onCambiarPreferencias,
+  onCambiarOpciones,
+  loading,
+  onAnadir,
+  onCerrar,
+}) {
   const [objetivo, setObjetivo] = useState({ tipo: "canciones", valor: 10 });
 
-  const { preferencias, opcionesMezcla } = filtros;
   const conFiltros = hayFiltros(preferencias, opcionesMezcla);
-  const panelDistinto = !mismosFiltros(filtros, parametrosPanel);
+  const conElegidos = preferencias.artistas.length > 0 || preferencias.canciones.length > 0;
 
   const quitar = (campo, id) =>
-    setFiltros((f) => ({
-      ...f,
-      preferencias: { ...f.preferencias, [campo]: f.preferencias[campo].filter((x) => (x.id ?? x) !== id) },
-    }));
+    onCambiarPreferencias({ ...preferencias, [campo]: preferencias[campo].filter((x) => (x.id ?? x) !== id) });
+  const cambiarOpcion = (campo, valor) => onCambiarOpciones({ ...opcionesMezcla, [campo]: valor });
 
   const chips = [
     ...(preferencias.playlistBase
       ? [{ clave: "base", texto: `📂 ${preferencias.playlistBase.name}`, quitar: () =>
-          setFiltros((f) => ({ ...f, preferencias: { ...f.preferencias, playlistBase: null } })) }]
+          onCambiarPreferencias({ ...preferencias, playlistBase: null }) }]
       : []),
     ...preferencias.artistas.map((a) => ({ clave: `a-${a.id}`, texto: `🎤 ${a.name}`, quitar: () => quitar("artistas", a.id) })),
     ...preferencias.canciones.map((c) => ({ clave: `c-${c.id}`, texto: `🎵 ${c.name}`, quitar: () => quitar("canciones", c.id) })),
     ...preferencias.generos.map((g) => ({ clave: `g-${g}`, texto: `🏷️ ${g}`, quitar: () => quitar("generos", g) })),
     ...preferencias.decadas.map((d) => ({ clave: `d-${d}`, texto: `📅 ${d}`, quitar: () => quitar("decadas", d) })),
     ...(opcionesMezcla.usarMiGusto
-      ? [{ clave: "gusto", texto: "⭐ Mis más escuchados", quitar: () =>
-          setFiltros((f) => ({ ...f, opcionesMezcla: { ...f.opcionesMezcla, usarMiGusto: false } })) }]
+      ? [{ clave: "gusto", texto: "⭐ Mis más escuchados", quitar: () => cambiarOpcion("usarMiGusto", false) }]
       : []),
     ...(opcionesMezcla.sinExplicitas
-      ? [{ clave: "explicitas", texto: "🔞 Sin explícitas", quitar: () =>
-          setFiltros((f) => ({ ...f, opcionesMezcla: { ...f.opcionesMezcla, sinExplicitas: false } })) }]
+      ? [{ clave: "explicitas", texto: "🔞 Sin explícitas", quitar: () => cambiarOpcion("sinExplicitas", false) }]
       : []),
   ];
 
-  const quitarTodos = () =>
-    setFiltros((f) => ({ preferencias: SIN_FILTROS, opcionesMezcla: { ...f.opcionesMezcla, usarMiGusto: false } }));
+  const quitarTodos = () => {
+    onCambiarPreferencias(SIN_FILTROS);
+    onCambiarOpciones({ ...opcionesMezcla, usarMiGusto: false });
+  };
 
   const objetivoFinal = ajustarObjetivo(objetivo.tipo, objetivo.valor);
   const textoBoton =
@@ -76,8 +71,8 @@ export default function AnadirMasWidget({ parametros, parametrosPanel, loading, 
     <div className="panel-anadir">
       <p className="widget-texto">
         {conFiltros
-          ? `Se añadirán con estos filtros (modo ${NOMBRES_MODO[opcionesMezcla.modo] || "Equilibrado"}). Quita los que no quieras:`
-          : "⚠️ Sin filtros: añadiré canciones de tus artistas más escuchados."}
+          ? `Se añadirán con los filtros del panel (modo ${NOMBRES_MODO[opcionesMezcla.modo] || "Equilibrado"}). Quita los que no quieras o añade otros en los widgets:`
+          : "Sin filtros: elige artistas, canciones o géneros en los widgets (o añadiré de tus más escuchados)."}
       </p>
 
       {chips.length > 0 && (
@@ -93,18 +88,24 @@ export default function AnadirMasWidget({ parametros, parametrosPanel, loading, 
         </div>
       )}
 
-      <div className="botones-playlist">
-        {conFiltros && (
+      {conElegidos && (
+        <label className="popularidad-label">
+          <input
+            type="checkbox"
+            checked={Boolean(opcionesMezcla.soloElegidos)}
+            onChange={(e) => cambiarOpcion("soloElegidos", e.target.checked)}
+          />{" "}
+          🎯 Solo los artistas elegidos
+        </label>
+      )}
+
+      {conFiltros && (
+        <div className="botones-playlist">
           <button type="button" className="boton-info-decadas" onClick={quitarTodos}>
             Quitar todos los filtros
           </button>
-        )}
-        {panelDistinto && (
-          <button type="button" className="boton-info-decadas" onClick={() => setFiltros(parametrosPanel)}>
-            Usar los filtros actuales del panel
-          </button>
-        )}
-      </div>
+        </div>
+      )}
 
       <CantidadPersonalizada etiqueta="¿Cuántas más?" objetivo={objetivo} onCambiar={setObjetivo} />
 
@@ -113,7 +114,7 @@ export default function AnadirMasWidget({ parametros, parametrosPanel, loading, 
           type="button"
           className="boton-playlist"
           disabled={loading}
-          onClick={() => onAnadir(filtros, objetivoFinal)}
+          onClick={() => onAnadir({ preferencias, opcionesMezcla }, objetivoFinal)}
         >
           {loading ? "Añadiendo..." : textoBoton}
         </button>

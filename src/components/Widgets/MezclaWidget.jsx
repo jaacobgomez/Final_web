@@ -99,6 +99,16 @@ export default function MezclaWidget({ opciones, onCambiarOpciones, explicitasEn
           Quitar las {explicitasEnLista} explícitas de la lista actual
         </button>
       )}
+      <label className="popularidad-label">
+        <input
+          type="checkbox"
+          checked={Boolean(opciones.soloElegidos)}
+          onChange={(e) =>
+            onCambiarOpciones({ ...opciones, soloElegidos: e.target.checked })
+          }
+        />{" "}
+        🎯 Solo los artistas elegidos (cada canción lleva a alguno; los géneros solo filtran)
+      </label>
     </div>
   );
 }

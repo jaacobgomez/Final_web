@@ -141,11 +141,23 @@ export default function TrackWidget({
           <p className="texto-seleccionados">Canciones seleccionadas:</p>
           <div className="chips-canciones">
             {cancionesSeleccionadas.map((cancion) => (
-              <span key={cancion.id} className="chip-cancion">
+              <span key={cancion.id} className="chip-filtro">
                 {cancion.name}
+                <button
+                  type="button"
+                  onClick={() => onCambiarCanciones(cancionesSeleccionadas.filter((x) => x.id !== cancion.id))}
+                  aria-label={`Quitar ${cancion.name}`}
+                >
+                  ✕
+                </button>
               </span>
             ))}
           </div>
+          {cancionesSeleccionadas.length > 1 && (
+            <button type="button" className="boton-info-decadas" onClick={() => onCambiarCanciones([])}>
+              Quitar todos
+            </button>
+          )}
         </div>
       )}
     </div>

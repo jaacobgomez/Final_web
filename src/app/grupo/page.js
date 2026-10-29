@@ -116,7 +116,8 @@ function Grupo() {
       actualizarEstado({
         listaReproduccion: tracks,
         guardada: null,
-        // "Añadir más" en el panel seguirá con los artistas del grupo
+        // Los artistas del grupo quedan en los widgets: "Añadir más" sigue con ellos
+        preferencias: { artistas, canciones: [], generos: [], decadas: [], playlistBase: null },
         ultimosParametros: {
           preferencias: { artistas, canciones: [], generos: [], decadas: [], playlistBase: null },
           opcionesMezcla: {

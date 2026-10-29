@@ -223,16 +223,9 @@ export default function DashboardPage() {
       setVecesAnadidas(0);
       setHistorial([]);
       setOrdenCambiado(false);
-      setUltimosParametros({
-        preferencias: {
-          artistas: [],
-          canciones: [],
-          generos: [],
-          decadas: [],
-          playlistBase: { id: playlist.id, name: playlist.name },
-        },
-        opcionesMezcla,
-      });
+      const prefsAbierta = { ...preferencias, playlistBase: { id: playlist.id, name: playlist.name } };
+      setPreferencias(prefsAbierta);
+      setUltimosParametros({ preferencias: prefsAbierta, opcionesMezcla });
       setAvisos([
         `📂 Has abierto «${playlist.name}» (${tracks.length} canciones). Elige cuántas añadir; luego pulsa «Actualizar» para guardarlas en ella.`,
       ]);
@@ -327,41 +320,88 @@ export default function DashboardPage() {
     }
   }
 
-  // Cambiar una canción por otra del mismo artista (con las décadas y el modo de la última vez)
+  // Artista con el que buscar la sustituta: en una colaboración, el que elegiste en el panel
+  function artistaParaCambiar(track, parametros) {
+    const elegidos = new Set(parametros.preferencias.artistas.map((a) => a.id));
+    return track.artists?.find((a) => elegidos.has(a.id)) || track.artists?.[0];
+  }
+
+  // Busca otra canción del mismo artista (con las décadas y el modo de la última vez)
+  async function buscarSustituta(track, excluirIds) {
+    const parametros = ultimosParametros || { preferencias, opcionesMezcla };
+    const artista = artistaParaCambiar(track, parametros);
+    if (!artista) return null;
+    const intentar = (decadas) =>
+      generarPlaylist(
+        { artistas: [artista], canciones: [], generos: [], decadas, playlistBase: null },
+        {
+          modo: parametros.opcionesMezcla.modo,
+          sinExplicitas: parametros.opcionesMezcla.sinExplicitas,
+          soloElegidos: parametros.opcionesMezcla.soloElegidos,
+          objetivo: { tipo: "canciones", valor: 1 },
+          excluirIds,
+        }
+      );
+    let { tracks } = await intentar(parametros.preferencias.decadas || []);
+    // Si con esas décadas no queda ninguna, se prueba sin ellas
+    if (tracks.length === 0 && parametros.preferencias.decadas?.length) {
+      ({ tracks } = await intentar([]));
+    }
+    return { artista, nueva: tracks[0] || null };
+  }
+
   async function cambiarCancion(track) {
-    const artista = track.artists?.[0];
-    if (!artista) return;
     setCambiandoId(track.id);
     setErrorPlaylist("");
     try {
-      const parametros = ultimosParametros || { preferencias, opcionesMezcla };
-      const intentar = (decadas) =>
-        generarPlaylist(
-          { artistas: [artista], canciones: [], generos: [], decadas, playlistBase: null },
-          {
-            modo: parametros.opcionesMezcla.modo,
-            sinExplicitas: parametros.opcionesMezcla.sinExplicitas,
-            objetivo: { tipo: "canciones", valor: 1 },
-            excluirIds: listaReproduccion.map((t) => t.id),
-          }
-        );
-      let { tracks } = await intentar(parametros.preferencias.decadas || []);
-      // Si con esas décadas no queda ninguna, se prueba sin ellas
-      if (tracks.length === 0 && parametros.preferencias.decadas?.length) {
-        ({ tracks } = await intentar([]));
-      }
-      if (tracks.length === 0) {
-        setAvisos([`No quedan más canciones de ${artista.name} para cambiarla.`]);
+      const resultado = await buscarSustituta(track, listaReproduccion.map((t) => t.id));
+      if (!resultado) return;
+      if (!resultado.nueva) {
+        setAvisos([`No quedan más canciones de ${resultado.artista.name} para cambiarla.`]);
         return;
       }
       apilar(`cambiar «${track.name}»`);
-      setListaReproduccion((prev) => prev.map((t) => (t.id === track.id ? tracks[0] : t)));
-      setAvisos([`🔄 «${track.name}» → «${tracks[0].name}».`]);
+      setListaReproduccion((prev) => prev.map((t) => (t.id === track.id ? resultado.nueva : t)));
+      setAvisos([`🔄 «${track.name}» → «${resultado.nueva.name}».`]);
     } catch (error) {
       console.error(error);
       setErrorPlaylist(error.message || "No se pudo cambiar la canción.");
     } finally {
       setCambiandoId(null);
+    }
+  }
+
+  // Cambiar varias de golpe (una a una, sin repetir entre ellas); un solo paso de deshacer
+  async function cambiarVarias(ids) {
+    setCargandoPlaylist(true);
+    setErrorPlaylist("");
+    const excluir = listaReproduccion.map((t) => t.id);
+    const cambios = new Map();
+    let sinSustituta = 0;
+    try {
+      for (const track of listaReproduccion.filter((t) => ids.includes(t.id))) {
+        setCambiandoId(track.id);
+        const resultado = await buscarSustituta(track, excluir);
+        if (resultado?.nueva) {
+          cambios.set(track.id, resultado.nueva);
+          excluir.push(resultado.nueva.id);
+        } else {
+          sinSustituta += 1;
+        }
+      }
+      if (cambios.size > 0) {
+        apilar(`cambiar ${cambios.size} canciones`);
+        setListaReproduccion((prev) => prev.map((t) => cambios.get(t.id) || t));
+      }
+      setAvisos([
+        `🔄 Cambiadas ${cambios.size} canciones.${sinSustituta ? ` ${sinSustituta} no tenían más canciones de su artista.` : ""}`,
+      ]);
+    } catch (error) {
+      console.error(error);
+      setErrorPlaylist(error.message || "No se pudieron cambiar las canciones.");
+    } finally {
+      setCambiandoId(null);
+      setCargandoPlaylist(false);
     }
   }
 
@@ -391,6 +431,12 @@ export default function DashboardPage() {
     const track = listaReproduccion.find((t) => t.id === idTrack);
     apilar(`quitar «${track?.name || "la canción"}»`);
     setListaReproduccion((prev) => prev.filter((t) => t.id !== idTrack));
+  }
+
+  function eliminarVarias(ids) {
+    apilar(`quitar ${ids.length} canciones`);
+    setListaReproduccion((prev) => prev.filter((t) => !ids.includes(t.id)));
+    setAvisos([`✕ Quitadas ${ids.length} canciones.`]);
   }
 
   const ORDENES = {
@@ -551,9 +597,10 @@ export default function DashboardPage() {
             onPanelAnadir={setPanelAnadirAbierto}
             renderAnadirMas={(cerrar) => (
               <AnadirMasWidget
-                key={JSON.stringify(ultimosParametros)}
-                parametros={ultimosParametros || { preferencias, opcionesMezcla }}
-                parametrosPanel={{ preferencias, opcionesMezcla }}
+                preferencias={preferencias}
+                opcionesMezcla={opcionesMezcla}
+                onCambiarPreferencias={setPreferencias}
+                onCambiarOpciones={setOpcionesMezcla}
                 loading={cargandoPlaylist}
                 onCerrar={cerrar}
                 onAnadir={async (parametros, objetivo) => {
@@ -570,6 +617,8 @@ export default function DashboardPage() {
             isFavorite={esFavorito}
             onToggleFavorite={toggleFavorito}
             onRemoveTrack={eliminarTrackDePlaylist}
+            onRemoveTracks={eliminarVarias}
+            onSwapTracks={cambiarVarias}
             onSwapTrack={cambiarCancion}
             cambiandoId={cambiandoId}
             onBanArtist={vetarArtista}

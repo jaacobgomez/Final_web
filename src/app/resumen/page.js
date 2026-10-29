@@ -78,19 +78,22 @@ export default function PaginaResumen() {
   };
 
   const hacerPlaylist = () => {
+    // Sus artistas quedan en los widgets del panel para seguir con «Añadir más»
+    const preferencias = {
+      artistas: datos.artistas.slice(0, 10).map(({ id, name }) => ({ id, name })),
+      canciones: [],
+      generos: [],
+      decadas: [],
+      playlistBase: null,
+    };
     actualizarEstado({
+      preferencias,
       listaReproduccion: datos.canciones,
       guardada: null,
       nombreSugerido: `Mi top · ${etiquetaPeriodo.toLowerCase()}`,
       avisos: [`⭐ Tus ${datos.canciones.length} canciones más escuchadas (${etiquetaPeriodo.toLowerCase()}).`],
       ultimosParametros: {
-        preferencias: {
-          artistas: datos.artistas.map(({ id, name }) => ({ id, name })),
-          canciones: [],
-          generos: [],
-          decadas: [],
-          playlistBase: null,
-        },
+        preferencias,
         opcionesMezcla: { modo: 'equilibrado', objetivo: { tipo: 'canciones', valor: 30 }, usarMiGusto: false },
       },
     });

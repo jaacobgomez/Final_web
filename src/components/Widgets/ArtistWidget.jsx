@@ -137,11 +137,23 @@ export default function ArtistWidget({
           <p className="texto-seleccionados">Artistas seleccionados:</p>
           <div className="chips-artistas">
             {artistasSeleccionados.map((artista) => (
-              <span key={artista.id} className="chip-artista">
+              <span key={artista.id} className="chip-filtro">
                 {artista.name}
+                <button
+                  type="button"
+                  onClick={() => onCambiarArtistas(artistasSeleccionados.filter((x) => x.id !== artista.id))}
+                  aria-label={`Quitar ${artista.name}`}
+                >
+                  ✕
+                </button>
               </span>
             ))}
           </div>
+          {artistasSeleccionados.length > 1 && (
+            <button type="button" className="boton-info-decadas" onClick={() => onCambiarArtistas([])}>
+              Quitar todos
+            </button>
+          )}
         </div>
       )}
     </div>

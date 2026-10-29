@@ -79,7 +79,10 @@ export async function buscarCancionesSpotify(terminoBusqueda) {
   return datos.tracks?.items || [];
 }
 
-// Búsqueda de canciones con una página concreta (offset)
+// Búsqueda de canciones con una página concreta (offset).
+// Devuelve { items, fin, fallo }: "fin" solo cuando Spotify dice que no hay más
+// (una página corta no basta: Spotify a veces devuelve menos aunque queden),
+// y "fallo" si la petición no ha ido bien (no significa que no haya canciones).
 async function buscarTracks(consulta, offset = 0) {
   const parametros = new URLSearchParams({
     type: 'track',
@@ -89,11 +92,17 @@ async function buscarTracks(consulta, offset = 0) {
   });
   try {
     const datos = await spotifyFetch(`/search?${parametros}`);
-    return datos.tracks?.items || [];
+    const resultados = datos.tracks || {};
+    const items = (resultados.items || []).filter(Boolean);
+    const fin =
+      resultados.next === null ||
+      (resultados.total != null && offset + LIMITE_BUSQUEDA >= resultados.total) ||
+      (resultados.next === undefined && items.length < LIMITE_BUSQUEDA);
+    return { items, fin, fallo: false };
   } catch (error) {
     // Una búsqueda fallida no debe tirar toda la playlist
     console.error(`Búsqueda fallida (${consulta}):`, error.message);
-    return [];
+    return { items: [], fin: false, fallo: true };
   }
 }
 
@@ -179,8 +188,12 @@ function claveCancion(track) {
 
 // Páginas para pedir después de las iniciales: primero hacia delante y, al final,
 // las anteriores (en Descubrir son las más conocidas)
-const MAX_OFFSET = 200;
-const MAX_PETICIONES_EXTRA = 60;
+// Spotify no deja pasar del resultado 1000 en una búsqueda
+const MAX_OFFSET = 990;
+const MAX_PETICIONES_EXTRA = 100;
+const MAX_FALLOS_POR_COLA = 4;
+// Peticiones a la vez: más rápido sin que Spotify nos frene
+const PETICIONES_A_LA_VEZ = 5;
 
 function paginasSiguientes(iniciales) {
   const desde = Math.min(...iniciales);
@@ -361,15 +374,26 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   }
 
   const pedirPagina = async (cola, offset) => {
-    const encontrados = await buscarTracks(cola.consulta, offset);
-    // Página incompleta: más allá ya no hay resultados
-    if (encontrados.length < LIMITE_BUSQUEDA) {
-      cola.pendientes = cola.pendientes.filter((o) => o < offset);
+    const { items, fin, fallo } = await buscarTracks(cola.consulta, offset);
+    if (fallo) {
+      // Se reintenta tras una pausa; solo se abandona la cola si falla varias veces seguidas
+      cola.fallos = (cola.fallos || 0) + 1;
+      if (cola.fallos < MAX_FALLOS_POR_COLA) {
+        cola.pendientes.unshift(offset);
+        await new Promise((r) => setTimeout(r, 800 * cola.fallos));
+      } else {
+        cola.pendientes = [];
+        cola.abandonada = true;
+      }
+      return [];
     }
+    cola.fallos = 0;
+    // Spotify dice que no hay más: las páginas posteriores sobran
+    if (fin) cola.pendientes = cola.pendientes.filter((o) => o < offset);
     // La búsqueda por artista es aproximada: fuera los de nombre parecido
     return cola.artistaId
-      ? encontrados.filter((t) => t.artists?.some((a) => a.id === cola.artistaId))
-      : encontrados;
+      ? items.filter((t) => t.artists?.some((a) => a.id === cola.artistaId))
+      : items;
   };
 
   await enLotes(
@@ -446,20 +470,25 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   }
   mezclar();
 
-  // Si faltan canciones, se piden más páginas hasta llegar al número exacto
+  // Si faltan canciones, se piden más páginas hasta llegar al número exacto.
+  // Con pocas colas se piden varias páginas de cada una a la vez.
   let peticionesExtra = 0;
   while (!yaLleno() && peticionesExtra < MAX_PETICIONES_EXTRA) {
     const abiertas = colas.filter((c) => c.pendientes.length > 0);
     if (abiertas.length === 0) break;
-    peticionesExtra += abiertas.length;
-    await enLotes(
-      abiertas.map((cola) => async () => {
-        const encontrados = await pedirPagina(cola, cola.pendientes.shift());
+    const porCola = Math.max(1, Math.floor(PETICIONES_A_LA_VEZ / abiertas.length));
+    const tareas = abiertas.flatMap((cola) =>
+      cola.pendientes.splice(0, porCola).map((offset) => async () => {
+        const encontrados = await pedirPagina(cola, offset);
         cola.tracks.push(...barajar(encontrados));
       })
     );
+    peticionesExtra += tareas.length;
+    await enLotes(tareas, PETICIONES_A_LA_VEZ);
     mezclar();
   }
+  // ¿Se ha parado porque de verdad no quedan, o por límite de peticiones o fallos?
+  const agotadas = colas.every((c) => c.pendientes.length === 0 && !c.abandonada);
 
   // Último recurso: repetir más a un mismo artista antes que quedarse corto
   if (!yaLleno()) {
@@ -470,7 +499,9 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     }
   }
 
-  if (!yaLleno()) {
+  if (!yaLleno() && !agotadas) {
+    avisos.push('Spotify ha ido lento o ha cortado alguna búsqueda: pulsa «Añadir más» para completar la lista.');
+  } else if (!yaLleno()) {
     avisos.push(
       anios.length > 0
         ? 'Hay pocas canciones con esos filtros: prueba con más décadas o más artistas.'

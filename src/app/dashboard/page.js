@@ -21,6 +21,7 @@ import MezclaWidget, { ajustarObjetivo } from "@/components/Widgets/MezclaWidget
 import AnadirMasWidget from "@/components/Widgets/AnadirMasWidget";
 import VetadosWidget from "@/components/Widgets/VetadosWidget";
 import PlantillasWidget from "@/components/Widgets/PlantillasWidget";
+import Bienvenida from "@/components/Bienvenida";
 import ArtistWidget from "@/components/Widgets/ArtistWidget";
 import TrackWidget from "@/components/Widgets/TrackWidget";
 import PlaylistBaseWidget from "@/components/Widgets/PlaylistBaseWidget";
@@ -64,6 +65,8 @@ export default function DashboardPage() {
   const [historial, setHistorial] = useState([]);
   // Si se ha reordenado la lista, "Actualizar" también cambia el orden en Spotify
   const [ordenCambiado, setOrdenCambiado] = useState(false);
+  // Cada vez que sube, se vuelve a abrir la guía
+  const [abrirGuia, setAbrirGuia] = useState(0);
 
   const idsActuales = listaReproduccion.map((t) => t.id).join(",");
   const hayCambiosSinGuardar = guardada !== null && guardada.ids !== idsActuales;
@@ -345,6 +348,7 @@ export default function DashboardPage() {
           { artistas: [artista], canciones: [], generos: [], decadas, playlistBase: null },
           {
             modo: parametros.opcionesMezcla.modo,
+            sinExplicitas: parametros.opcionesMezcla.sinExplicitas,
             objetivo: { tipo: "canciones", valor: 1 },
             excluirIds: listaReproduccion.map((t) => t.id),
           }
@@ -410,10 +414,22 @@ export default function DashboardPage() {
     setOrdenCambiado(true);
   }
 
+  function quitarExplicitas() {
+    const cuantas = listaReproduccion.filter((t) => t.explicit).length;
+    apilar(`quitar ${cuantas} explícitas`);
+    setListaReproduccion((prev) => prev.filter((t) => !t.explicit));
+    setAvisos([`🔞 Quitadas ${cuantas} canciones explícitas.`]);
+  }
+
   // Plantilla: sustituye los filtros del panel y genera directamente
   function aplicarPlantilla(plantilla) {
     const prefs = { artistas: [], canciones: [], generos: plantilla.generos, decadas: [], playlistBase: null };
-    const opciones = { modo: plantilla.modo, objetivo: plantilla.objetivo, usarMiGusto: plantilla.usarMiGusto };
+    const opciones = {
+      modo: plantilla.modo,
+      objetivo: plantilla.objetivo,
+      usarMiGusto: plantilla.usarMiGusto,
+      sinExplicitas: opcionesMezcla.sinExplicitas,
+    };
     setPreferencias(prefs);
     manejarGenerar(prefs, opciones);
   }
@@ -442,6 +458,7 @@ export default function DashboardPage() {
 
   return (
     <section className="dashboard">
+      <Bienvenida abrirAhora={abrirGuia} />
       <div className="dashboard-contenedor">
         <div className="dashboard-columna-izquierda">
           <header className="dashboard-cabecera">
@@ -451,6 +468,9 @@ export default function DashboardPage() {
               tuya), decide el tipo de mezcla y genera. Después guárdala en tu Spotify.
               ¿Con amigos? Prueba la <Link href="/grupo">mezcla de grupo</Link>.
             </p>
+            <button type="button" className="boton-info-decadas" onClick={() => setAbrirGuia((n) => n + 1)}>
+              ❓ Cómo funciona
+            </button>
           </header>
 
           <PlantillasWidget onElegir={aplicarPlantilla} cargando={cargandoPlaylist} />
@@ -503,6 +523,8 @@ export default function DashboardPage() {
           <MezclaWidget
             opciones={opcionesMezcla}
             onCambiarOpciones={setOpcionesMezcla}
+            explicitasEnLista={listaReproduccion.filter((t) => t.explicit).length}
+            onQuitarExplicitas={quitarExplicitas}
           />
 
           <PlaylistDisplay

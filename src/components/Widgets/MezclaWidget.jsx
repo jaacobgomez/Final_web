@@ -17,7 +17,7 @@ const OBJETIVOS = [
   { tipo: "minutos", valor: 90, etiqueta: "1 h 30 min" },
 ];
 
-export default function MezclaWidget({ opciones, onCambiarOpciones }) {
+export default function MezclaWidget({ opciones, onCambiarOpciones, explicitasEnLista = 0, onQuitarExplicitas }) {
   const modoActual = MODOS.find((m) => m.clave === opciones.modo);
   const esPredefinido = OBJETIVOS.some(
     (o) => o.tipo === opciones.objetivo.tipo && o.valor === opciones.objetivo.valor
@@ -83,6 +83,22 @@ export default function MezclaWidget({ opciones, onCambiarOpciones }) {
         />{" "}
         Añadir también mis artistas más escuchados
       </label>
+
+      <label className="popularidad-label">
+        <input
+          type="checkbox"
+          checked={Boolean(opciones.sinExplicitas)}
+          onChange={(e) =>
+            onCambiarOpciones({ ...opciones, sinExplicitas: e.target.checked })
+          }
+        />{" "}
+        🔞 Sin canciones explícitas (para comidas familiares o con peques)
+      </label>
+      {opciones.sinExplicitas && explicitasEnLista > 0 && (
+        <button type="button" className="boton-info-decadas" onClick={onQuitarExplicitas}>
+          Quitar las {explicitasEnLista} explícitas de la lista actual
+        </button>
+      )}
     </div>
   );
 }

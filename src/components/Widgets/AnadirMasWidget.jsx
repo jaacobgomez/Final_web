@@ -25,7 +25,8 @@ function mismosFiltros(a, b) {
   return (
     JSON.stringify(a.preferencias) === JSON.stringify(b.preferencias) &&
     a.opcionesMezcla.modo === b.opcionesMezcla.modo &&
-    Boolean(a.opcionesMezcla.usarMiGusto) === Boolean(b.opcionesMezcla.usarMiGusto)
+    Boolean(a.opcionesMezcla.usarMiGusto) === Boolean(b.opcionesMezcla.usarMiGusto) &&
+    Boolean(a.opcionesMezcla.sinExplicitas) === Boolean(b.opcionesMezcla.sinExplicitas)
   );
 }
 
@@ -55,6 +56,10 @@ export default function AnadirMasWidget({ parametros, parametrosPanel, loading, 
     ...(opcionesMezcla.usarMiGusto
       ? [{ clave: "gusto", texto: "⭐ Mis más escuchados", quitar: () =>
           setFiltros((f) => ({ ...f, opcionesMezcla: { ...f.opcionesMezcla, usarMiGusto: false } })) }]
+      : []),
+    ...(opcionesMezcla.sinExplicitas
+      ? [{ clave: "explicitas", texto: "🔞 Sin explícitas", quitar: () =>
+          setFiltros((f) => ({ ...f, opcionesMezcla: { ...f.opcionesMezcla, sinExplicitas: false } })) }]
       : []),
   ];
 

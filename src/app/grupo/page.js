@@ -25,6 +25,7 @@ function Grupo() {
   const [participantes, setParticipantes] = useState([]);
   const [pegado, setPegado] = useState('');
   const [incluirme, setIncluirme] = useState(true);
+  const [sinExplicitas, setSinExplicitas] = useState(false);
   const [miEnlace, setMiEnlace] = useState('');
   const [mensaje, setMensaje] = useState('');
   const [error, setError] = useState('');
@@ -107,7 +108,7 @@ function Grupo() {
         return;
       }
 
-      const { tracks, avisos, comunes, artistas } = await generarMezclaGrupo(todos);
+      const { tracks, avisos, comunes, artistas } = await generarMezclaGrupo(todos, { sinExplicitas });
       const nombres = todos.map((p) => p.nombre).join(', ');
 
       // Se abre en el panel con todo lo de siempre: guardar, actualizar, compartir…
@@ -117,7 +118,12 @@ function Grupo() {
         // "Añadir más" en el panel seguirá con los artistas del grupo
         ultimosParametros: {
           preferencias: { artistas, canciones: [], generos: [], decadas: [], playlistBase: null },
-          opcionesMezcla: { modo: 'equilibrado', objetivo: { tipo: 'canciones', valor: 30 }, usarMiGusto: false },
+          opcionesMezcla: {
+            modo: 'equilibrado',
+            objetivo: { tipo: 'canciones', valor: 30 },
+            usarMiGusto: false,
+            sinExplicitas,
+          },
         },
         nombreSugerido: `Mezcla · ${nombres}`.slice(0, 90),
         avisos: [
@@ -231,6 +237,10 @@ function Grupo() {
         <label className="popularidad-label">
           <input type="checkbox" checked={incluirme} onChange={(e) => setIncluirme(e.target.checked)} />{' '}
           Incluir también mi gusto
+        </label>
+        <label className="popularidad-label">
+          <input type="checkbox" checked={sinExplicitas} onChange={(e) => setSinExplicitas(e.target.checked)} />{' '}
+          🔞 Sin canciones explícitas
         </label>
 
         <h3 className="widget-titulo">3. Generar</h3>

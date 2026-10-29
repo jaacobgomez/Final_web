@@ -54,3 +54,6 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - **⚡ Plantillas rápidas**: Estudiar, Gimnasio, Viaje en coche, Cena tranquila y Fiesta. Ponen los filtros y generan de un toque.
 - **🔀 Ordenar**: barajar, por año o alternando artistas. Al pulsar «Actualizar» el orden también llega a Spotify (salvo en playlists con podcasts o archivos locales, para no perderlos).
 - **📊 Resumen**: pestaña nueva con tu top de 4 semanas, 6 meses o desde siempre, imagen para stories y playlist con tu top.
+- **Lista más limpia**: cada canción muestra carátula, título y duración. Toca la carátula para escucharla; el resto (favorita, cambiar, abrir en Spotify, quitar, vetar) está en **⋯**. Deshacer y Ordenar van en una barra encima de la lista.
+- **🔞 Sin explícitas**: casilla en «Tipo de mezcla» (y en Grupo). Las canciones explícitas llevan una «E».
+- **👋 Bienvenida**: guía de 3 pasos la primera vez y cómo instalarla en iPhone/Android. Se reabre con «❓ Cómo funciona».

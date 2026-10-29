@@ -222,6 +222,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     excluirIds = [],
     desplazamiento = 0,
     vetados = cargarVetados(),
+    sinExplicitas = false,
   } = opciones;
   const idsVetados = new Set(vetados.map((a) => a.id));
 
@@ -366,6 +367,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
   const intentarAnadir = (track, elegida) => {
     if (!track?.id || excluidas.has(track.id)) return 'no';
     if (track.artists?.some((a) => idsVetados.has(a.id))) return 'no';
+    if (sinExplicitas && track.explicit) return 'no';
     const clave = claveCancion(track);
     if (clavesVistas.has(clave)) return 'no';
     const artistaId = track.artists?.[0]?.id;
@@ -398,10 +400,13 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     }
   };
 
-  // Las canciones elegidas a mano van siempre (si no se están excluyendo)
+  // Las canciones elegidas a mano van siempre (si no se están excluyendo),
+  // salvo que sean explícitas y se hayan pedido sin explícitas
   for (const cancion of canciones) {
     if (yaLleno()) break;
-    intentarAnadir(cancion, true);
+    if (intentarAnadir(cancion, true) === 'no' && sinExplicitas && cancion.explicit) {
+      avisos.push(`He quitado «${cancion.name}» porque es explícita.`);
+    }
   }
   mezclar();
 

@@ -101,27 +101,6 @@ export default function PlaylistDisplay({
 
       {panelAnadirAbierto && tracks.length > 0 && renderAnadirMas(() => onPanelAnadir(false))}
 
-      {ultimaAccion && (
-        <button type="button" className="boton-info-decadas" onClick={onDeshacer} disabled={loading}>
-          ↩️ Deshacer: {ultimaAccion}
-        </button>
-      )}
-
-      {tracks.length > 1 && (
-        <div className="lista-decadas">
-          <span className="popularidad-label">Ordenar:</span>
-          <button type="button" className="boton-decada" onClick={() => onOrdenar("barajar")} disabled={loading}>
-            🔀 Barajar
-          </button>
-          <button type="button" className="boton-decada" onClick={() => onOrdenar("anio")} disabled={loading}>
-            📅 Por año
-          </button>
-          <button type="button" className="boton-decada" onClick={() => onOrdenar("alternar")} disabled={loading}>
-            🎤 Alternar artistas
-          </button>
-        </div>
-      )}
-
       {error && <p className="texto-error-busqueda">{error}</p>}
       {avisos.map((aviso) => (
         <p key={aviso} className="texto-estado-busqueda">{aviso}</p>
@@ -218,6 +197,33 @@ export default function PlaylistDisplay({
           Todavía no hay canciones. Configura tus widgets y pulsa
           <strong> &quot;Generar playlist&quot;</strong>.
         </p>
+      )}
+
+      {/* Barra de la lista: deshacer a la izquierda, ordenar a la derecha */}
+      {tracks.length > 0 && (ultimaAccion || tracks.length > 1) && (
+        <div className="barra-lista">
+          {ultimaAccion ? (
+            <button type="button" className="boton-info-decadas" onClick={onDeshacer} disabled={loading}>
+              ↩️ Deshacer: {ultimaAccion}
+            </button>
+          ) : (
+            <span />
+          )}
+          {tracks.length > 1 && (
+            <select
+              className="widget-input barra-lista-ordenar"
+              value=""
+              disabled={loading}
+              onChange={(e) => e.target.value && onOrdenar(e.target.value)}
+              aria-label="Ordenar la lista"
+            >
+              <option value="">↕️ Ordenar…</option>
+              <option value="barajar">🔀 Barajar</option>
+              <option value="anio">📅 Por año</option>
+              <option value="alternar">🎤 Alternar artistas</option>
+            </select>
+          )}
+        </div>
       )}
 
       {tracks.length > 0 && (

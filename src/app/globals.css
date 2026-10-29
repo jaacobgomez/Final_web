@@ -1136,3 +1136,149 @@ body {
 .barra-lista-ordenar {
   width: auto;
 }
+
+/* ==== Fiesta con votos ==== */
+
+.fiesta-tarjeta {
+  text-align: left;
+}
+
+.fiesta-entrada {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1rem;
+}
+
+.fiesta-qr {
+  width: 160px;
+  height: 160px;
+  border-radius: 0.75rem;
+  background: #fff;
+  padding: 6px;
+}
+
+.fiesta-codigo {
+  margin: 0.25rem 0 0.5rem;
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #1ed760;
+}
+
+.fiesta-votos-restantes {
+  font-weight: 600;
+  color: #1ed760;
+}
+
+.fiesta-votos-restantes.agotados {
+  color: #facc15;
+}
+
+.fiesta-lista {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.fiesta-fila {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.6rem;
+  border-radius: 0.7rem;
+  background-color: #09090b;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fiesta-fila-votada {
+  border-color: rgba(29, 185, 84, 0.6);
+}
+
+.fiesta-posicion {
+  width: 1.4rem;
+  flex-shrink: 0;
+  text-align: center;
+  font-weight: 700;
+  color: var(--foreground-muted);
+}
+
+.fiesta-imagen {
+  flex-shrink: 0;
+  border-radius: 0.4rem;
+}
+
+.fiesta-votantes {
+  font-size: 0.68rem;
+  color: var(--foreground-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fiesta-contador {
+  flex-shrink: 0;
+  font-weight: 700;
+}
+
+.fiesta-voto {
+  flex-shrink: 0;
+  min-width: 56px;
+  padding: 0.45rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: transparent;
+  color: var(--foreground);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.fiesta-voto-activo {
+  background-color: #1db954;
+  border-color: #1db954;
+  color: #000;
+}
+
+.fiesta-voto:disabled {
+  opacity: 0.5;
+}
+
+.fiesta-resultados {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.fiesta-resultados button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.5rem 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.6rem;
+  background: #111114;
+  color: var(--foreground);
+  text-align: left;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.fiesta-resultados button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.fiesta-resultado-texto {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

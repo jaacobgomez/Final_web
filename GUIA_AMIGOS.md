@@ -57,3 +57,9 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - **Lista más limpia**: cada canción muestra carátula, título y duración. Toca la carátula para escucharla; el resto (favorita, cambiar, abrir en Spotify, quitar, vetar) está en **⋯**. Deshacer y Ordenar van en una barra encima de la lista.
 - **🔞 Sin explícitas**: casilla en «Tipo de mezcla» (y en Grupo). Las canciones explícitas llevan una «E».
 - **👋 Bienvenida**: guía de 3 pasos la primera vez y cómo instalarla en iPhone/Android. Se reabre con «❓ Cómo funciona».
+
+## 8. Fiesta con votos (29-10-2026)
+- **Anfitrión** (necesita sesión de Spotify): pestaña **Fiesta** → nombre, votos por persona (3 por defecto) y lista de partida opcional → **Crear fiesta**. Sale un QR y un código (p. ej. `RITMO-22`).
+- **Invitados** (sin cuenta de Spotify ni estar en la lista de 5): escanean el QR, ponen su nombre y reparten sus votos entre canciones de la lista o nuevas que buscan (añadir una cuenta como voto). Pueden quitar un voto para darlo a otra.
+- La lista se ordena sola por votos en todos los móviles. El anfitrión puede **Pasar a Spotify** (playlist privada «🎉 nombre», ordenada por votos), **poner la más votada en la cola** (Premium; hay que tener Spotify sonando), quitar canciones y **terminar** la fiesta (se borra todo; la playlist se queda). A las 24 h caduca sola.
+- Configuración: base de datos en Supabase (`supabase/fiesta.sql`) y 3 variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`).

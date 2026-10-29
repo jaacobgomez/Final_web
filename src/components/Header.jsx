@@ -68,6 +68,17 @@ export default function Cabecera() {
 
             <li className="panel-li">
               <Link
+                href="/fiesta"
+                className={`panel ${
+                  rutaActual?.startsWith("/fiesta") ? "bg-white/10" : ""
+                }`}
+              >
+                Fiesta
+              </Link>
+            </li>
+
+            <li className="panel-li">
+              <Link
                 href="/resumen"
                 className={`panel ${
                   rutaActual?.startsWith("/resumen") ? "bg-white/10" : ""

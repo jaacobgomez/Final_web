@@ -616,6 +616,25 @@ export async function subirPortadaPlaylist(playlistId, jpegBase64) {
   return respuesta.ok;
 }
 
+// Poner una canción en la cola de lo que esté sonando (necesita Premium).
+// Spotify responde sin cuerpo, por eso no pasa por spotifyFetch.
+export async function ponerEnCola(uri) {
+  const token = await getValidAccessToken();
+  if (!token) throw new Error('Tu sesión de Spotify ha caducado. Vuelve a iniciar sesión.');
+  const respuesta = await fetch(`${API}/me/player/queue?${new URLSearchParams({ uri })}`, {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (respuesta.ok) return;
+  if (respuesta.status === 404) {
+    throw new Error('No hay nada sonando: abre Spotify en algún dispositivo, pon cualquier canción y vuelve a probar.');
+  }
+  if (respuesta.status === 401 || respuesta.status === 403) {
+    throw new Error('Spotify no me deja usar tu cola: cierra sesión y vuelve a entrar para dar el permiso (y hace falta Premium).');
+  }
+  throw new Error(`Spotify no ha aceptado la canción (código ${respuesta.status}).`);
+}
+
 // Añadir canciones al final de una playlist (máx. 100 por llamada)
 async function anadirCanciones(playlistId, tracks) {
   const uris = tracks.map((t) => t.uri).filter(Boolean);

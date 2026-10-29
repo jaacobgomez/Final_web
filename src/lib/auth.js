@@ -66,7 +66,8 @@ export async function getSpotifyAuthUrl() {
     'user-library-read',      // tus canciones guardadas (modo "Descubrir")
     'playlist-modify-public',
     'playlist-modify-private',
-    'ugc-image-upload'        // portada automática de las playlists
+    'ugc-image-upload',       // portada automática de las playlists
+    'user-modify-playback-state' // fiesta: poner la más votada en la cola
   ].join(' ');
 
   const params = new URLSearchParams({

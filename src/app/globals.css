@@ -1393,4 +1393,11 @@ body {
   display: block;
   margin: 0.6rem 0 0.4rem;
   text-align: center;
+  /* Blanco para no confundirlo con el verde de "Guardar e iniciar sesión" */
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.boton-paso-mi-clave:hover {
+  background-color: #e5e5e5;
 }

@@ -55,6 +55,11 @@ export default function PaginaInicio() {
             >
               Iniciar sesión con Spotify
             </button>
+            <p className="nota-inicio">
+              Se abre la página oficial de Spotify: entra como siempre, con{' '}
+              <strong>Google, Apple o Facebook</strong> si es como lo haces, sin contraseña. Si ya tienes
+              Spotify abierto en este navegador, solo tendrás que pulsar <strong>Aceptar</strong>.
+            </p>
 
             {clientIdPropio ? (
               <p className="nota-inicio">

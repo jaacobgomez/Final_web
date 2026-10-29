@@ -31,6 +31,7 @@ function MiClave() {
   const [enlaceMovil, setEnlaceMovil] = useState('');
   const [error, setError] = useState('');
   const [copiado, setCopiado] = useState(false);
+  const [redirigiendo, setRedirigiendo] = useState(false);
 
   const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || '';
 
@@ -60,6 +61,7 @@ function MiClave() {
       setError('Eso no parece un Client ID: son 32 letras y números (sin espacios).');
       return;
     }
+    setRedirigiendo(true); // si no, se ve un instante la pantalla de "ya tienes tu clave"
     setClientIdPropio(id.trim());
     window.location.href = await getSpotifyAuthUrl();
   };
@@ -72,7 +74,9 @@ function MiClave() {
         <p className="texto-pequeno">Acceso con tu propia clave</p>
         <h2 className="titulo-inicio">Usa tu propia app de Spotify</h2>
 
-        {recibidoValido ? (
+        {redirigiendo ? (
+          <p className="texto-descripcion">Abriendo Spotify…</p>
+        ) : recibidoValido ? (
           <>
             <p className="texto-descripcion">
               📱 Ya tienes tu clave (…{idRecibido.slice(-6)}) desde tu otro dispositivo. Solo falta iniciar sesión

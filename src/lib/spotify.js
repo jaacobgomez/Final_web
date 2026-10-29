@@ -1,4 +1,4 @@
-import { getValidAccessToken } from './auth';
+import { getClientIdPropio, getValidAccessToken } from './auth';
 import { cargarVetados } from './vetados';
 
 // Todo lo que hay aquí usa solo endpoints que siguen vivos tras los cambios
@@ -35,9 +35,15 @@ async function spotifyFetch(ruta, opciones = {}, intentos = 2) {
   }
 
   if (respuesta.status === 403) {
-    throw new Error(
-      'Spotify no te deja usar esta app todavía: pide al administrador que añada tu correo de Spotify.'
-    );
+    // Spotify explica el motivo en el cuerpo (usuario no dado de alta, dueño sin Premium…)
+    const motivo = await respuesta
+      .json()
+      .then((d) => d?.error?.message || '')
+      .catch(() => '');
+    const quien = getClientIdPropio()
+      ? 'revisa en tu app de Spotify (User Management) que está tu correo y que la cuenta dueña tiene Premium'
+      : 'pide al administrador que añada tu correo de Spotify';
+    throw new Error(`Spotify no te deja usar esta app todavía: ${quien}.${motivo ? ` (Spotify dice: «${motivo}»)` : ''}`);
   }
 
   if (!respuesta.ok) {

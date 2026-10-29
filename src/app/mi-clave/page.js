@@ -118,11 +118,15 @@ function MiClave() {
 
             <ol className="lista-caracteristicas">
               <li>
-                1. Entra en{' '}
-                <a href="https://developer.spotify.com/dashboard" target="_blank" rel="noreferrer">
-                  developer.spotify.com/dashboard
-                </a>{' '}
-                con tu cuenta de Spotify y acepta los términos.
+                1. Abre la web de desarrolladores de Spotify, entra con tu cuenta y acepta los términos:
+                <a
+                  href="https://developer.spotify.com/dashboard"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="boton-inicio boton-paso-mi-clave"
+                >
+                  Abrir Spotify for Developers ↗
+                </a>
               </li>
               <li>2. Pulsa <strong>Create app</strong>. Nombre y descripción: lo que quieras.</li>
               <li>

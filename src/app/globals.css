@@ -1387,3 +1387,10 @@ body {
 :where(a:not([class])):hover {
   color: #3be477;
 }
+
+/* Paso 1 de /mi-clave: botón grande dentro de la lista de pasos */
+.boton-paso-mi-clave {
+  display: block;
+  margin: 0.6rem 0 0.4rem;
+  text-align: center;
+}

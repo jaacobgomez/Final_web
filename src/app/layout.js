@@ -18,7 +18,8 @@ export const metadata = {
   appleWebApp: {
     capable: true,
     title: "Taste Mixer",
-    statusBarStyle: "black-translucent",
+    // "black" y no "black-translucent": si no, en el iPhone el contenido pasa por debajo de la hora
+    statusBarStyle: "black",
   },
   icons: {
     icon: "/icon-192.png",

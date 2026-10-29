@@ -36,10 +36,14 @@ async function spotifyFetch(ruta, opciones = {}, intentos = 2) {
 
   if (respuesta.status === 403) {
     // Spotify explica el motivo en el cuerpo (usuario no dado de alta, dueño sin Premium…)
-    const motivo = await respuesta
-      .json()
-      .then((d) => d?.error?.message || '')
-      .catch(() => '');
+    // A veces es JSON y a veces texto plano ("…the user may not be registered.")
+    const cuerpo = await respuesta.text().catch(() => '');
+    let motivo = cuerpo.trim();
+    try {
+      motivo = JSON.parse(cuerpo)?.error?.message || motivo;
+    } catch {
+      // no era JSON: nos quedamos con el texto
+    }
     const quien = getClientIdPropio()
       ? 'revisa en tu app de Spotify (User Management) que está tu correo y que la cuenta dueña tiene Premium'
       : 'pide al administrador que añada tu correo de Spotify';

@@ -428,19 +428,21 @@ body {
 
 /* Botón pequeño de ayuda */
 .boton-info-decadas {
-  font-size: 0.7rem;
-  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.75rem;
   border-radius: 999px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background-color: transparent;
-  color: var(--foreground-muted);
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  background-color: rgba(255, 255, 255, 0.08);
+  color: var(--foreground);
   cursor: pointer;
   align-self: flex-start;
   margin-top: 0.15rem;
 }
 
 .boton-info-decadas:hover {
-  background-color: rgba(255, 255, 255, 0.05);
+  background-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.7);
 }
 
 /* Lista desplegable de explicación de décadas */
@@ -1372,4 +1374,16 @@ body {
   border-radius: 0.75rem;
   background-color: rgba(255, 255, 255, 0.04);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Enlaces dentro del texto: verdes y subrayados para que se vea que se pueden pulsar */
+:where(a:not([class])) {
+  color: #1ed760;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+
+:where(a:not([class])):hover {
+  color: #3be477;
 }

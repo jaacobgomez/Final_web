@@ -5,6 +5,14 @@ import { usePathname, useRouter } from "next/navigation";
 import { logout } from "@/lib/auth";
 import { useSesion } from "@/lib/useSesion";
 
+const SECCIONES = [
+  { href: "/", icono: "🏠", texto: "Inicio" },
+  { href: "/dashboard", icono: "🎛️", texto: "Panel" },
+  { href: "/grupo", icono: "👥", texto: "Grupo" },
+  { href: "/fiesta", icono: "🎉", texto: "Fiesta" },
+  { href: "/resumen", icono: "📊", texto: "Resumen" },
+];
+
 export default function Cabecera() {
   const rutaActual = usePathname();
   const router = useRouter();
@@ -105,6 +113,24 @@ export default function Cabecera() {
           </ul>
         </nav>
       </div>
+
+      {/* En el móvil, las secciones van en una barra fija abajo, como en cualquier app */}
+      <nav className="barra-movil" aria-label="Secciones">
+        {SECCIONES.map((seccion) => {
+          const activa =
+            seccion.href === "/" ? rutaActual === "/" : rutaActual?.startsWith(seccion.href);
+          return (
+            <Link
+              key={seccion.href}
+              href={seccion.href}
+              className={`barra-movil-enlace ${activa ? "activa" : ""}`}
+            >
+              <span aria-hidden="true">{seccion.icono}</span>
+              {seccion.texto}
+            </Link>
+          );
+        })}
+      </nav>
     </header>
   );
 }

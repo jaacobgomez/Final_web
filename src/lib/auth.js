@@ -64,6 +64,8 @@ export async function getSpotifyAuthUrl() {
     'user-read-email',
     'user-top-read',          // tus artistas y canciones más escuchados
     'user-library-read',      // tus canciones guardadas (modo "Descubrir")
+    'playlist-read-private',  // "Tus playlists" (las apps nuevas de Spotify lo exigen)
+    'playlist-read-collaborative',
     'playlist-modify-public',
     'playlist-modify-private',
     'ugc-image-upload',       // portada automática de las playlists

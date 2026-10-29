@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { isAuthenticated } from "@/lib/auth";
+import { useSesion } from "@/lib/useSesion";
 import { cargarEstado, guardarEstado } from "@/lib/estado";
 import { cargarVetados, guardarVetados } from "@/lib/vetados";
 import { crearPortada } from "@/lib/portada";
@@ -28,7 +27,7 @@ import PlaylistBaseWidget from "@/components/Widgets/PlaylistBaseWidget";
 import PlaylistDisplay from "@/components/PlaylistDisplay";
 
 export default function DashboardPage() {
-  const router = useRouter();
+  const sesion = useSesion();
 
   const [preferencias, setPreferencias] = useState({
     artistas: [],
@@ -70,13 +69,6 @@ export default function DashboardPage() {
 
   const idsActuales = listaReproduccion.map((t) => t.id).join(",");
   const hayCambiosSinGuardar = guardada !== null && guardada.ids !== idsActuales;
-
-  // Si no está autenticado, devolverlo al inicio
-  useEffect(() => {
-    if (!isAuthenticated()) {
-      router.push("/");
-    }
-  }, [router]);
 
   // Cargar favoritos desde localStorage (si existen)
   useEffect(() => {
@@ -454,6 +446,23 @@ export default function DashboardPage() {
 
   function esFavorito(trackId) {
     return favoritos.some((t) => t.id === trackId);
+  }
+
+  // Sin sesión no se enseña el panel (antes se veía un instante y saltaba al inicio)
+  if (sesion === null) return null;
+  if (sesion === false) {
+    return (
+      <section className="portada-inicio">
+        <div className="tarjeta-inicio card">
+          <h2 className="titulo-inicio">Panel de mezcla</h2>
+          <p className="texto-descripcion">
+            Inicia sesión con Spotify para crear tus playlists. ¿Solo quieres votar en una fiesta? Abre el enlace o el
+            QR que te han pasado: para eso no hace falta cuenta.
+          </p>
+          <Link href="/" className="boton-inicio">Iniciar sesión</Link>
+        </div>
+      </section>
+    );
   }
 
   return (

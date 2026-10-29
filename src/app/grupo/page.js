@@ -162,8 +162,19 @@ function Grupo() {
   return (
     <section className="portada-inicio">
       <div className="tarjeta-inicio card">
-        <p className="texto-pequeno">Para quedadas, viajes y fiestas</p>
+        <p className="texto-pequeno">Para viajes, quedadas y regalos</p>
         <h2 className="titulo-inicio">Mezcla de grupo</h2>
+        <div className="grupo-explicacion">
+          <p>
+            <strong>Qué hace:</strong> junta los artistas favoritos de varias personas y crea una playlist con lo que
+            tenéis en común y un poco de cada uno. No hace falta estar juntos: cada uno manda su enlace cuando pueda.
+          </p>
+          <p>
+            <strong>¿Y una Jam de Spotify?</strong> En una Jam elegís canción a canción en directo. Aquí no tenéis que
+            pensar nada: la app elige por vosotros según lo que escucha cada uno.{' '}
+            ¿Estáis juntos y queréis votar lo que suena? Usa <Link href="/fiesta">🎉 Fiesta</Link>.
+          </p>
+        </div>
 
         {pendiente && (
           <div className="card">

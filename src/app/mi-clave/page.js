@@ -148,7 +148,7 @@ function MiClave() {
             />
             {error && <p className="texto-error-busqueda">{error}</p>}
 
-            <button type="button" className="boton-inicio" onClick={guardarYEntrar}>
+            <button type="button" className="boton-inicio" onClick={() => guardarYEntrar()}>
               Guardar e iniciar sesión
             </button>
 

@@ -33,7 +33,7 @@ export function quitarClientIdPropio() {
 
 // Un Client ID de Spotify son 32 caracteres hexadecimales
 export function esClientIdValido(clientId) {
-  return /^[0-9a-f]{32}$/i.test(clientId.trim());
+  return /^[0-9a-f]{32}$/i.test(String(clientId ?? '').trim());
 }
 
 // ---------- PKCE ----------

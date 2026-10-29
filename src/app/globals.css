@@ -1362,3 +1362,14 @@ body {
   border-top: 1px solid rgba(255, 255, 255, 0.08);
   text-align: left;
 }
+
+.mi-clave-movil {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem;
+  border-radius: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}

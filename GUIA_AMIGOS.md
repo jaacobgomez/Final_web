@@ -63,3 +63,5 @@ Quien no esté en tu lista entra desde la portada → **"¿No estás en la lista
 - **Invitados** (sin cuenta de Spotify ni estar en la lista de 5): escanean el QR, ponen su nombre y reparten sus votos entre canciones de la lista o nuevas que buscan (añadir una cuenta como voto). Pueden quitar un voto para darlo a otra.
 - La lista se ordena sola por votos en todos los móviles. El anfitrión puede **Pasar a Spotify** (playlist privada «🎉 nombre», ordenada por votos), **poner la más votada en la cola** (Premium; hay que tener Spotify sonando), quitar canciones y **terminar** la fiesta (se borra todo; la playlist se queda). A las 24 h caduca sola.
 - Configuración: base de datos en Supabase (`supabase/fiesta.sql`) y 3 variables (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SECRET_KEY`).
+- **Clave propia en el móvil**: tras configurarla en el ordenador, /mi-clave muestra un QR «📱 ¿La quieres también en el móvil?». Al escanearlo, el móvil llega con la clave puesta y solo falta iniciar sesión.
+- **Grupo sin cuenta**: quien no puede iniciar sesión elige 3-10 artistas a mano en Grupo y manda su enlace de gusto.

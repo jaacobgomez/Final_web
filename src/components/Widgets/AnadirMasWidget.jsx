@@ -98,6 +98,16 @@ export default function AnadirMasWidget({
           🎯 Solo los artistas elegidos
         </label>
       )}
+      {conElegidos && opcionesMezcla.soloElegidos && (
+        <label className="popularidad-label">
+          <input
+            type="checkbox"
+            checked={Boolean(opcionesMezcla.soloPrincipal)}
+            onChange={(e) => cambiarOpcion("soloPrincipal", e.target.checked)}
+          />{" "}
+          ↳ Y que sean temas suyos, no colaboraciones en temas de otros
+        </label>
+      )}
 
       {conFiltros && (
         <div className="botones-playlist">

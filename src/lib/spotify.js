@@ -234,6 +234,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     vetados = cargarVetados(),
     sinExplicitas = false,
     soloElegidos = false,
+    soloPrincipal = false,
   } = opciones;
   const idsVetados = new Set(vetados.map((a) => a.id));
 
@@ -247,6 +248,8 @@ export async function generarPlaylist(preferencias, opciones = {}) {
       ? artistas.map((a) => a.id)
       : canciones.flatMap((c) => (c.artists || []).map((a) => a.id))
   );
+  // "Solo como principal" es más estricto aún: fuera sus apariciones en temas de otros
+  const principal = soloElegidos && soloPrincipal && idsElegidos.size > 0;
   const estricto = soloElegidos && idsElegidos.size > 0;
   const idsAMano = new Set(canciones.map((c) => c.id));
 
@@ -400,6 +403,7 @@ export async function generarPlaylist(preferencias, opciones = {}) {
     if (track.artists?.some((a) => idsVetados.has(a.id))) return 'no';
     if (sinExplicitas && track.explicit) return 'no';
     if (estricto && !idsAMano.has(track.id) && !track.artists?.some((a) => idsElegidos.has(a.id))) return 'no';
+    if (principal && !idsAMano.has(track.id) && !idsElegidos.has(track.artists?.[0]?.id)) return 'no';
     const clave = claveCancion(track);
     if (clavesVistas.has(clave)) return 'no';
     const artistaId = track.artists?.[0]?.id;

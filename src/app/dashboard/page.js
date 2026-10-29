@@ -338,6 +338,7 @@ export default function DashboardPage() {
           modo: parametros.opcionesMezcla.modo,
           sinExplicitas: parametros.opcionesMezcla.sinExplicitas,
           soloElegidos: parametros.opcionesMezcla.soloElegidos,
+          soloPrincipal: parametros.opcionesMezcla.soloPrincipal,
           objetivo: { tipo: "canciones", valor: 1 },
           excluirIds,
         }

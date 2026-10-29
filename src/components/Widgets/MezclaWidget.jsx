@@ -109,6 +109,16 @@ export default function MezclaWidget({ opciones, onCambiarOpciones, explicitasEn
         />{" "}
         🎯 Solo los artistas elegidos (cada canción lleva a alguno; los géneros solo filtran)
       </label>
+      {opciones.soloElegidos && (
+        <label className="popularidad-label">
+          <input
+            type="checkbox"
+            checked={Boolean(opciones.soloPrincipal)}
+            onChange={(e) => onCambiarOpciones({ ...opciones, soloPrincipal: e.target.checked })}
+          />{" "}
+          ↳ Y que sean temas suyos, no colaboraciones en temas de otros
+        </label>
+      )}
     </div>
   );
 }

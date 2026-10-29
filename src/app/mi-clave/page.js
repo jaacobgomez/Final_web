@@ -32,6 +32,7 @@ function MiClave() {
   const [error, setError] = useState('');
   const [copiado, setCopiado] = useState(false);
   const [redirigiendo, setRedirigiendo] = useState(false);
+  const [claveCopiada, setClaveCopiada] = useState(false);
 
   const redirectUri = process.env.NEXT_PUBLIC_REDIRECT_URI || '';
 
@@ -41,6 +42,15 @@ function MiClave() {
       setCopiado(true);
     } catch {
       setCopiado(false);
+    }
+  };
+
+  const copiarClave = async () => {
+    try {
+      await navigator.clipboard.writeText(clientIdGuardado);
+      setClaveCopiada(true);
+    } catch {
+      setClaveCopiada(false);
     }
   };
 
@@ -93,6 +103,13 @@ function MiClave() {
               ✅ Este dispositivo usa tu propia clave (…{clientIdGuardado.slice(-6)}).
             </p>
             <Link href="/" className="boton-inicio">Volver al inicio</Link>
+            <p className="nota-inicio">
+              ¿Usas la app instalada en el iPhone? No comparte datos con Safari: copia la clave y pégala
+              en Mi clave dentro de la app.{' '}
+              <button type="button" className="boton-info-decadas" onClick={copiarClave}>
+                {claveCopiada ? '¡Copiada!' : 'Copiar mi clave'}
+              </button>
+            </p>
             {enlaceMovil && (
               <div className="mi-clave-movil">
                 <p className="widget-texto">

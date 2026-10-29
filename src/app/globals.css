@@ -1401,3 +1401,14 @@ body {
 .boton-paso-mi-clave:hover {
   background-color: #e5e5e5;
 }
+
+/* Portada: aviso para pasar la clave propia del ordenador al móvil */
+.aviso-qr-inicio {
+  margin: 0.75rem 0;
+  padding: 0.75rem 0.9rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(30, 215, 96, 0.5);
+  background-color: rgba(30, 215, 96, 0.08);
+  font-size: 0.85rem;
+  line-height: 1.4;
+}

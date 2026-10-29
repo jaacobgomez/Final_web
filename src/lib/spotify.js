@@ -46,7 +46,7 @@ async function spotifyFetch(ruta, opciones = {}, intentos = 2) {
     }
     const quien = getClientIdPropio()
       ? 'revisa en tu app de Spotify (User Management) que está tu correo y que la cuenta dueña tiene Premium'
-      : 'pide al administrador que añada tu correo de Spotify';
+      : 'pide al administrador que añada tu correo de Spotify o, si tienes tu propia clave, ponla en este dispositivo en Inicio → Mi clave';
     throw new Error(`Spotify no te deja usar esta app todavía: ${quien}.${motivo ? ` (Spotify dice: «${motivo}»)` : ''}`);
   }
 

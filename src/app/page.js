@@ -34,6 +34,14 @@ export default function PaginaInicio() {
         {sesion === true && (
           <>
             <p className="texto-descripcion">✅ Ya has iniciado sesión con Spotify.</p>
+            <p className="nota-inicio">
+              {clientIdPropio ? (
+                <>Usas tu propia clave (…{clientIdPropio.slice(-6)}). </>
+              ) : (
+                <>Usas la app compartida de Jacob. </>
+              )}
+              <Link href="/mi-clave">{clientIdPropio ? 'Ver o pasar al móvil' : '¿Tienes tu propia clave? Ponla aquí'}</Link>
+            </p>
             <Link href="/dashboard" className="boton-inicio">
               Ir al panel de mezcla
             </Link>
@@ -67,10 +75,18 @@ export default function PaginaInicio() {
                 <Link href="/mi-clave">Cambiarla</Link>
               </p>
             ) : (
+              <>
+              <div className="aviso-qr-inicio">
+                <strong>📱 ¿Ya tienes tu propia clave en el ordenador?</strong> Abre allí{' '}
+                <strong>Mi clave</strong> y escanea el QR con la cámara. Si usas la app instalada en
+                el iPhone, pega la clave en <Link href="/mi-clave">Mi clave</Link> desde la propia app
+                (el QR se abre en Safari, que no comparte datos con la app instalada).
+              </div>
               <p className="nota-inicio">
                 Acceso por invitación: tu correo de Spotify tiene que estar dado de alta en la app.{' '}
                 <Link href="/mi-clave">¿No estás en la lista? Usa tu propia clave</Link>
               </p>
+              </>
             )}
           </>
         )}

@@ -75,7 +75,10 @@ export async function getSpotifyAuthUrl() {
     response_type: 'code',
     redirect_uri: redirectUri,
     state: state,
-    scope: scope
+    scope: scope,
+    // Siempre pregunta, con su enlace "¿No eres tú?": si no, Spotify entra solo con la
+    // cuenta que tenga abierta el navegador (p. ej. la del titular del plan familiar)
+    show_dialog: 'true'
   });
 
   if (clientIdPropio) {

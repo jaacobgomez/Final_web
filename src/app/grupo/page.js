@@ -7,6 +7,7 @@ import { useSesion } from '@/lib/useSesion';
 import { generarMezclaGrupo, obtenerMiGusto } from '@/lib/spotify';
 import { cargarGrupo, codificarGusto, decodificarGusto, guardarGrupo } from '@/lib/grupo';
 import { actualizarEstado } from '@/lib/estado';
+import GustoManual from '@/components/GustoManual';
 
 // useSearchParams necesita un <Suspense> alrededor para el build de producción
 export default function PaginaGrupo() {
@@ -150,10 +151,17 @@ function Grupo() {
         <div className="tarjeta-inicio card">
           <h2 className="titulo-inicio">Mezcla de grupo</h2>
           <p className="texto-descripcion">
-            Inicia sesión con Spotify para unirte o crear una mezcla. Después vuelve a abrir el
-            enlace que te han pasado.
+            Junta los artistas favoritos de varias personas en una playlist. Quien la crea y la guarda en Spotify
+            tiene que iniciar sesión; los demás pueden mandar su gusto sin cuenta.
           </p>
-          <Link href="/" className="boton-inicio">Ir al inicio</Link>
+          {pendiente && (
+            <p className="texto-estado-busqueda">
+              🎧 {pendiente.nombre} te ha pasado su gusto. Para hacer la mezcla con él, inicia sesión y vuelve a abrir
+              su enlace.
+            </p>
+          )}
+          <Link href="/" className="boton-inicio">Iniciar sesión</Link>
+          <GustoManual />
         </div>
       </section>
     );

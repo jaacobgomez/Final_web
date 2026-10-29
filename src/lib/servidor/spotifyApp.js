@@ -58,3 +58,13 @@ export async function buscarCancionesApp(consulta) {
 export async function obtenerCancionApp(id) {
   return cancionLigera(await spotifyApp(`/tracks/${encodeURIComponent(id)}`));
 }
+
+export async function buscarArtistasApp(consulta) {
+  const parametros = new URLSearchParams({ type: 'artist', q: consulta, limit: '10' });
+  const datos = await spotifyApp(`/search?${parametros}`);
+  return (datos.artists?.items || []).map((a) => ({
+    id: a.id,
+    name: a.name,
+    images: (a.images || []).slice(-1),
+  }));
+}
